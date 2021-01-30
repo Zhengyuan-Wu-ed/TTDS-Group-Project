@@ -11,4 +11,4 @@ The data sets we use in this project are:
 2.  MovieLens 25M Dataset
 (https://grouplens.org/datasets/movielens/25m/)
 
-___These database file should be download and put under the "Data" fold.___
+___These database file should be download and put under the "data" fold.___
