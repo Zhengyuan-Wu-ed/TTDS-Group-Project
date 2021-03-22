@@ -7,7 +7,7 @@ body{
     
 }
 header{
-    background: black;
+    background-image: url('images/back2.png');
     /* background-repeat: no-repeat; */
     height: 200px;
     padding: 20px;
@@ -17,10 +17,11 @@ header{
 
 img{
     background-size: 100%;
+    text-align: center;
 }
 
 section{
-    background: snow;
+    background: rgba(255, 255, 255, 0.295);
     height: 400px;
 }
 
@@ -31,6 +32,7 @@ footer{
 }
 input,label{
     vertical-align: middle;
+    
 }
 
 .search_content{
@@ -60,7 +62,7 @@ input,label{
 
 p{
     font-family: Arial, Helvetica, sans-serif;
-    color: cadetblue;
+    color: gray;
     text-align: center;
 }
 

@@ -22,7 +22,7 @@ body {
 .main_header{
     background-image: url('images/back2.png');
     background-color: black;
-    background-size: 100%;
+    /*background-size: 100%;*/
     background-position: center;
     height: 400px;
     /* position: relative; */
@@ -47,11 +47,12 @@ img{
 section{
     background: black;
     height: 800px;
+    text-align: center;
 }
 
 footer{
     background: black;
-    height: 200px;
+    height: 100px;
 }
 
 
@@ -212,5 +213,6 @@ h3{
     font-size: small;
 }
 p{
-  color: black;
+    text-align: center;
+    color: gray;
 }
