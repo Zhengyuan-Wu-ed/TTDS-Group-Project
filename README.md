@@ -8,7 +8,7 @@ __Data Collections__:
 The data sets we use in this project are:
 1.  IMDb Largest Review Dataset part-1 (Number of reviews = 1, 010, 293)
 (https://www.kaggle.com/ebiswas/imdb-review-dataset)
-2.  IMDb Datasets
+2.  IMDb Datasets title.basics.tsv.gz
 (https://www.imdb.com/interfaces/)
 
 ___These database file should be download and put under the "data" fold.___
