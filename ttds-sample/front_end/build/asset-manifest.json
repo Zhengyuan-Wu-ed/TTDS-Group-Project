@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "./static/css/main.fb727919.chunk.css",
+    "main.js": "./static/js/main.48182cd1.chunk.js",
+    "main.js.map": "./static/js/main.48182cd1.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.dea9a706.js",
+    "runtime-main.js.map": "./static/js/runtime-main.dea9a706.js.map",
+    "static/css/2.de2ac02e.chunk.css": "./static/css/2.de2ac02e.chunk.css",
+    "static/js/2.bb4a3195.chunk.js": "./static/js/2.bb4a3195.chunk.js",
+    "static/js/2.bb4a3195.chunk.js.map": "./static/js/2.bb4a3195.chunk.js.map",
+    "static/js/3.6113c0bd.chunk.js": "./static/js/3.6113c0bd.chunk.js",
+    "static/js/3.6113c0bd.chunk.js.map": "./static/js/3.6113c0bd.chunk.js.map",
+    "index.html": "./index.html",
+    "static/css/2.de2ac02e.chunk.css.map": "./static/css/2.de2ac02e.chunk.css.map",
+    "static/css/main.fb727919.chunk.css.map": "./static/css/main.fb727919.chunk.css.map",
+    "static/js/2.bb4a3195.chunk.js.LICENSE.txt": "./static/js/2.bb4a3195.chunk.js.LICENSE.txt",
+    "static/media/ReviewOverall.css": "./static/media/back2.b50e4bc9.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.dea9a706.js",
+    "static/css/2.de2ac02e.chunk.css",
+    "static/js/2.bb4a3195.chunk.js",
+    "static/css/main.fb727919.chunk.css",
+    "static/js/main.48182cd1.chunk.js"
+  ]
+}
