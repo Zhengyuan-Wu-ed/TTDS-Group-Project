@@ -1,0 +1,218 @@
+/* body{
+    background:black;
+    color:white;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    
+    
+} */
+body {
+    margin: 0;
+    color: white;
+    font: 16px/1 'Open Sans',sans-serif;
+    font-weight: 400;
+    background: #1e1f21;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+.main_header{
+    background: url('../images/back2.png');
+    background-color: black;
+    /*background-size: 100%;*/
+    background-position: center;
+    height: 400px;
+    /* position: relative; */
+    /* margin:0; */
+    margin: 0;
+    padding:0;
+    text-align: center;
+}
+/* div{
+    background: red;
+    display: inline-block;
+    margin-top: 2px;
+    height: 50px;
+    width: 200px;
+} */
+
+
+img{
+    background-size: 100%;
+}
+
+section{
+    background: black;
+    height: 800px;
+    text-align: center;
+}
+
+footer{
+    background: black;
+    height: 100px;
+}
+
+
+.search_content{
+    margin-top: 2px;
+    margin-left: 550px;
+    width:400px;
+    height: 50px;
+    border-radius: 10px;
+}
+.selector{
+   
+    /* margin-left: 1100px; */
+    /* vertical-align: middle; */
+    /* position: relative;
+    top: 50px; */
+   
+    width:20px;
+    height:20px;
+    
+
+}
+/* .rewiew{
+    background: cornsilk;
+    height: 800px;
+} */
+
+
+p{
+    font-family: Arial, Helvetica, sans-serif;
+    color: cadetblue;
+    text-align: center;
+}
+
+.filters {
+    flex-shrink: 0;
+    background: rgba(0,0,0,.05);
+    color: white(0,0,0,.9);
+    cursor: default;
+    padding: 34px 0;
+    min-width: 236px;
+}
+
+div {
+    display: block;
+}
+li {
+    text-align: -webkit-match-parent;
+}
+
+
+.filters .title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 36px;
+    cursor: pointer;
+}
+
+.filters .title .expand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 18px;
+    height: 18px;
+    margin: 0 20px 0 0;
+    background: rgba(0,0,0,.06);
+    border-radius: 4px;
+}
+.filters .section.expanded>ul {
+    display: block;
+    padding: 10px 0 24px;
+}
+.filters .section li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 28px;
+    font-size: 95%;
+    font-weight: 400;
+    transition: color 50ms;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.filters .title h2 {
+    text-transform: uppercase;
+    font-size: 95%;
+    color: white(0,0,0,.8);
+    white-space: nowrap;
+}
+
+.filters input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    margin: 0 20px 0 0;
+    border: 2px solid rgba(0,0,0,.1);
+   
+    transition: background 400ms,border-width 400ms,border-color 400ms;
+}
+ .filters input[type=radio] {
+    border-radius: 100%;
+}  
+
+.filters input:checked {
+    background: #62d681;
+    border-width: 0;
+}
+
+.filters input:checked::after {
+    content: '';
+    transform: rotate(45deg);
+    height: 7px;
+    width: 3px;
+    border-bottom: 2px solid #fff;
+    border-right: 2px solid #fff;
+    margin-left: -1px;
+    margin-top: -2px;
+}
+
+.filters .title .expand::before {
+    position: absolute;
+    content: '';
+    background: rgba(0,0,0,.6);
+    height: 2px;
+    width: 8px;
+}
+
+.input_comment{
+    width:400px;
+    height: 40px;
+    /* background-color: blue; */
+
+}
+.first_review{
+    /* height:300px; */
+    /* padding: 5px; */
+    padding: 5px;
+    background-color: snow(100, 141, 153);
+}
+.first_reviewer{
+    padding: 10px;
+    display: inline;
+    /* margin-top: 20px; */
+    /* background-color: blue; */
+    color: black;
+    /* text-align: center; */
+}
+h3{
+    font-size: small;
+}
+p{
+    text-align: center;
+    color: gray;
+}
