@@ -19,7 +19,7 @@ class ReviewOverall extends React.Component{
         this.state={
             reviewInfo: [],
             searchMovie: '',
-            loading: false,
+            loading: true,
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
         this.getData = this.getData.bind(this);
@@ -41,10 +41,12 @@ class ReviewOverall extends React.Component{
                     // allReviewData = reviewDic
                     this.setState({
                         // reviewInfo: reviewDic
-                        reviewInfo: reviewDic
+                        reviewInfo: reviewDic,
+                        loading: false
                     });
                     console.log(this.state.searchMovie)
                     console.log(this.state.reviewInfo)
+                    console.log(this.state.loading)
                 }
             ).catch(error=>{
                 message.error(error.message)
@@ -97,6 +99,11 @@ class ReviewOverall extends React.Component{
 
     render(){
 
+        if (this.state.loading) {
+            return(
+            <div>Loading</div>
+            )
+        }
             return (
                 <div>
                 <title>search_content</title>
@@ -105,9 +112,9 @@ class ReviewOverall extends React.Component{
                 <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
                 <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
                 <div>
-                    <ReviewDetail movie="a" average="80" genre = "Sci-fi" number="09"/>
+                    <ReviewDetail movie={this.state.reviewInfo.index1? this.state.reviewInfo.index1.movieName: "Unknow"} average={this.state.reviewInfo.index1.averageRating} genre = {this.state.reviewInfo.index1.genre} number={this.state.reviewInfo.index1.number}/>
                     <ReviewDetail />
-                    <ReviewDetail />
+                    <ReviewDetail />       
                 </div>
                 <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
                 {/* <h1>{this.props.location.state.name == "The Matrix" ? 'b': 'a'}</h1> */}
