@@ -4,7 +4,7 @@ import {HashRouter, withRouter, Route, Redirect} from 'react-router-dom';
  
 import MainPage from "./pages/MainPage";
 import ReviewOverall from "./pages/ReviewOverall";
- 
+
 export default class MyRouter extends Component {
     render(){
         return(

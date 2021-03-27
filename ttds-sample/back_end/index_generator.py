@@ -9,6 +9,8 @@ import re
 from stemming.porter2 import stem
 import numpy as np
 
+import get_inverted_index as gii;
+
 result_file = 'result.json'
 inverted_index_file = 'inverted_index.json'
 i = 0
@@ -16,51 +18,51 @@ test_dic = []
 start_1 = datetime.datetime.now()
 
 
-def stemming_algorithms(row_list):
-    stem_list = [stem(word) for word in row_list]
-    return stem_list
+# def stemming_algorithms(row_list):
+#     stem_list = [stem(word) for word in row_list]
+#     return stem_list
 
 
-def preprocess(input):
-    output = input.split()
-    out_1 = []
-    for word in output:
-        strr = re.sub("[^\w]",' ', word).lower()
-        # if len(strr.split()) == 1:
-        out_1.append(strr.strip())
-        # else:
-        #     for s in strr.split():
-        #         out_1.append(s.strip())
-    final_output = stem(' '.join(out_1))
-    return final_output
+# def preprocess(input):
+#     output = input.split()
+#     out_1 = []
+#     for word in output:
+#         strr = re.sub("[^\w]",' ', word).lower()
+#         # if len(strr.split()) == 1:
+#         out_1.append(strr.strip())
+#         # else:
+#         #     for s in strr.split():
+#         #         out_1.append(s.strip())
+#     final_output = stem(' '.join(out_1))
+#     return final_output
 
 
-def generate_index(movie_list):
-    inverted_index = {}
-    for index, movie in enumerate(movie_list):
-        words = movie.split()
-        for word_position, word in enumerate(words):
-            # print(word_position)
-            # print(word)
-            if word in inverted_index:
-                if index in inverted_index[word][1]:
-                    inverted_index[word][1][index].append(str(word_position+1))
-                else:
-                    inverted_index[word][1][index] = [str(word_position+1)]
-            else:
-                inverted_index[word] = []
-                inverted_index[word].append(1)
-                inverted_index[word].append({})
-                inverted_index[word][1][index] = [str(word_position+1)]
-            inverted_index[word][0] = len(inverted_index[word][1])
-    return inverted_index
+# def generate_index(movie_list):
+#     inverted_index = {}
+#     for index, movie in enumerate(movie_list):
+#         words = movie.split()
+#         for word_position, word in enumerate(words):
+#             # print(word_position)
+#             # print(word)
+#             if word in inverted_index:
+#                 if index in inverted_index[word][1]:
+#                     inverted_index[word][1][index].append(str(word_position+1))
+#                 else:
+#                     inverted_index[word][1][index] = [str(word_position+1)]
+#             else:
+#                 inverted_index[word] = []
+#                 inverted_index[word].append(1)
+#                 inverted_index[word].append({})
+#                 inverted_index[word][1][index] = [str(word_position+1)]
+#             inverted_index[word][0] = len(inverted_index[word][1])
+#     return inverted_index
 
 
-def get_inverted_index():
-    with open(inverted_index_file) as f:
-        inverted_index = json.load(f)
+# def get_inverted_index():
+#     with open(inverted_index_file) as f:
+#         inverted_index = json.load(f)
 
-    return inverted_index
+#     return inverted_index
 
 
 def best_suitable(input, result):
@@ -71,11 +73,11 @@ def best_suitable(input, result):
 
 
 # The default search which is a phrase search, return the movies' name
-def normal_search(input, review_dic):
+def normal_search(input, review_dic, inverted_index):
     input = input.lower()
     start = datetime.datetime.now()
     movie_list = list(review_dic)
-    inverted_index = generate_index(movie_list)
+    # inverted_index = generate_index(movie_list)
     start_0 = datetime.datetime.now()
     print(start_0 - start)
     result_list = {}
@@ -197,17 +199,19 @@ def get_input_movie():
     return input_movie
 
 
-def getResult(movie):
+def getResult(movie, review_dic, inverted_index):
     print(movie)
-    with open(result_file) as f:
-        review_dic = json.load(f)
-    result_dic = normal_search(movie, review_dic)
+    # with open(result_file) as f:
+    #     review_dic = json.load(f)
+    result_dic = normal_search(movie, review_dic, inverted_index)
     all_movie_result = movie_result(result_dic)
     # print(np.array(all_movie_result))
-    # print(type(all_movie_result))
-    # print(len(all_movie_result))
+    print(type(all_movie_result))
+    print(len(all_movie_result))
+    print(all_movie_result)
 
     return all_movie_result
+
 # How to use these functions
 if __name__ == "__main__":
 
@@ -216,8 +220,16 @@ if __name__ == "__main__":
     #     review_dic = json.load(f)
 
     # 影评分类的测试
-    get_movie = "hollywood"
-    getResult(get_movie)
+    with open(result_file) as f:
+        review_dic = json.load(f)
+    movie = 'enemy lines'
+    print(movie)
+    inverted_index = gii.generate_index(review_dic)
+    result_dic = normal_search(movie, review_dic, inverted_index)
+    all_movie_result = movie_result(result_dic)
+    print(all_movie_result)
+    # get_movie = "hollywood"
+    # getResult(get_movie)
 
     # mylist = [[1, 2, 3], [4, 5, 6]] 
 

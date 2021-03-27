@@ -14,7 +14,9 @@ class MainPage extends React.Component{
         super(props);
         this.state={
           inputValue:'',
-          reviewInfo: [],
+          reviewInfo: {},
+          foo:1,
+          isReceive: false
 
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
@@ -28,27 +30,45 @@ class MainPage extends React.Component{
 
     handleClickBtn(event) {
       var movieName = this.state.inputValue
-
       HttpUtil.post('/ReviewOverall', movieName)
         .then(
           reviewDic =>{
               // this.allReviewData = reviewDic;
               // console.log(reviewDic)
-              this.allReviewData = reviewDic
+              // this.allReviewData = reviewDic
               this.setState({
-                  reviewInfo: reviewDic
+                  reviewInfo: reviewDic,
+                  isReceive: true
+              }, () => {
+                console.log(this.state.reviewInfo)
+                console.log('123')
               });
-              // console.log(this.state.reviewInfo)
-              // console.log(this.allReviewData)
+              console.log(this.state.reviewInfo)
+              console.log(reviewDic)
           }
       );
       // var path = `/ReviewOverall/${movieName}`
+      // if (this.state.reviewInfo != ''){
+      //   console.log("yes")
+      //   console.log(this.state.reviewInfo)
+      // }
+      // var path = {
+      //   pathname:'/ReviewOverall',
+      //   state: {name:movieName, review:this.state.reviewInfo},
+      // }
+      // this.props.history.push(path);
+    }
+
+    componentDidUpdate() {
       var path = {
         pathname:'/ReviewOverall',
-        state: {name:movieName},
-        
+        state: {name:this.state.inputValue, review:this.state.reviewInfo},
       }
-      this.props.history.push(path);
+      if(this.state.isReceive){
+
+        console.log(this.state.reviewInfo)
+        this.props.history.push(path);
+      }
     }
 
     render(){

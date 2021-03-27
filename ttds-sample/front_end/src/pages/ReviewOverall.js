@@ -32,6 +32,7 @@ class ReviewOverall extends React.Component{
         var data = this.props.location.state;
         if (data){
             console.log(data.name)
+            console.log(data)
             var {name} = data
             this.setState({
                 searchMovie: data.name,
