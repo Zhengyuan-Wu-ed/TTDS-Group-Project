@@ -14,6 +14,9 @@ var allReviewData = [];
 //     return <h3>Hello, {props.name}</h3>; <h3>Hellp, {props.age}</h3>
 // }
 class ReviewOverall extends React.Component{
+
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state={
@@ -25,6 +28,7 @@ class ReviewOverall extends React.Component{
         this.getData = this.getData.bind(this);
     }
     componentDidMount () {
+        this._isMounted = true;
         var data = this.props.location.state;
         if (data){
             console.log(data.name)
@@ -53,6 +57,10 @@ class ReviewOverall extends React.Component{
             })
         }
         
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
     handleClickBtn(event) {
         this.props.history.push("/");
@@ -112,7 +120,7 @@ class ReviewOverall extends React.Component{
                 <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
                 <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
                 <div>
-                    <ReviewDetail movie={this.state.reviewInfo.index1? this.state.reviewInfo.index1.movieName: "Unknow"} average={this.state.reviewInfo.index1.averageRating} genre = {this.state.reviewInfo.index1.genre} number={this.state.reviewInfo.index1.number}/>
+                    <ReviewDetail movie={this.state.reviewInfo.index1? this.state.reviewInfo.index1.movieName: "Unknow"} year={this.state.reviewInfo.index1.year} average={this.state.reviewInfo.index1.averageRating} genre = {this.state.reviewInfo.index1.genre} number={this.state.reviewInfo.index1.number}/>
                     <ReviewDetail />
                     <ReviewDetail />       
                 </div>
@@ -142,6 +150,7 @@ class ReviewDetail extends Component {
                 <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
                 {/* <header className="first_reviewer"> */}
                     <h3>Movie Name: {this.props.movie}</h3>
+                    <h3>Year: {this.props.year}</h3>
                     <h3>Average rating: {this.props.average}</h3>
                     <h3>Genre: {this.props.genre}</h3>
                     <h3>Review number: {this.props.number}</h3>

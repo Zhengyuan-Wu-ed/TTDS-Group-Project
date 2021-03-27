@@ -15,3 +15,15 @@ ___These database file should be download and put under the "data" fold.___
 
 __Project Report__:
 https://cn.overleaf.com/1933499746xyxkrkbkywns
+
+
+__Current Tasks__:
+
+1. Build all pages 
+2. Receive data from server and display all data on the website
+3. Fix all bug
+4. Report writing
+5. Improve the quality of pages
+6. Write request APIs
+7. Store and return request data
+8. 如何循环显示返回的数据
