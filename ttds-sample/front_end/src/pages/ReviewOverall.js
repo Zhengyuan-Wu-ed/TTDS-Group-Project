@@ -24,28 +24,40 @@ class ReviewOverall extends React.Component{
             searchMovie: '',
             loading: true,
             isReceive: false,
+            reviewMovie: 'a',
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
         // this.getData = this.getData.bind(this);
         this.handleClickBtn2 = this.handleClickBtn2.bind(this)
+        this.changeState = this.changeState.bind(this)
     }
     handleClickBtn2(event) {
         this.setState({
             isReceive: true
         })
-      }
+    }
+
+    changeState = (movie) => {
+        this.setState({
+            reviewMovie: movie,
+            isReceive: true
+        })
+        console.log(movie)
+    };
+      
   
-      componentDidUpdate() {
-        // console.log('a')
-        var path = {
-          pathname:'/MoviePage',
-          state: {review: this.props.location.state.review},
-        }
-        if(this.state.isReceive){
-          console.log(this.props.location.state.review)
-          this.props.history.push(path);
-        }
-      }
+    componentDidUpdate() {
+    // console.log('a')
+    var path = {
+        pathname:'/MoviePage',
+        state: {review: this.props.location.state.review},
+    }
+    if(this.state.isReceive){
+        console.log(this.props.location.state.review)
+        // console.log(this.state.reviewMovie)
+        this.props.history.push(path);
+    }
+    }
     componentDidMount () {
         this._isMounted = true;
         var data = this.props.location.state;
@@ -72,30 +84,7 @@ class ReviewOverall extends React.Component{
     handleClickBtn(event) {
         this.props.history.push("/");
     }
-    // getData(){
-    //     if (this.props.location.state){
-    //         this.setState({
-    //             reviewInfo:this.props.location.state.review
-    //         });
-    //         // HttpUtil.get('/ReviewOverall/'+this.props.location.state.name)
-    //         // .then(
-    //         //     reviewDic =>{
-
-    //         //         // allReviewData = reviewDic
-    //         //         this.setState({
-    //         //             // reviewInfo: reviewDic
-    //         //             reviewInfo: reviewDic
-    //         //         });
-    //         //         console.log(this.state.searchMovie)
-    //         //         console.log(this.state.reviewInfo)
-    //         //     }
-    //         // ).catch(error=>{
-    //         //     message.error(error.message)
-    //         // })
-    //     }           
-    // }
     
-
     render(){
 
         if (this.state.loading) {
@@ -175,29 +164,8 @@ class ReviewOverall extends React.Component{
                 </div>
                 {/* <div style={{backgroundColor: '#EEEEEE'}}> */}
                 
-                <Reviews data={this.state.reviewInfo}/>
-                    {/* <ReviewDetail movie={this.state.reviewInfo.index1? this.state.reviewInfo.index1.movieName: "Unknow"} year={this.state.reviewInfo.index1.year} average={this.state.reviewInfo.index1.averageRating} genre = {this.state.reviewInfo.index1.genre} number={this.state.reviewInfo.index1.number}/>
-                    <ReviewDetail />
-                    <ReviewDetail />        */}
-                {/* </div> */}
-                {/* <div className="first_review" style={{backgroundColor: '#EEEEEE'}}> */}
-                {/* <h1>{this.props.location.state.name == "The Matrix" ? 'b': 'a'}</h1> */}
-                {/* </div> */}
-                </section>  
-                {/* <div style={{height: '200px', backgroundColor: 'white', color: 'black'}}>
-                <h1>user name</h1>
-                <h1>rating</h1>
-                <form action="/exampleml/form_action.asp" method="get">
-                    <p><input type="checkbox" name="vehicle" defaultValue="Bike" /> Does it contains spoiler ?</p>
-                </form>
-                <textarea style={{minHeight: '100px', minWidth: '800px', maxHeight: '100px', maxWidth: '800px'}} cols={80} rows={5} defaultValue={""} />
-                <button>submit</button>
-                </div>   */}
-                {/* <footer>
-                <p>
-                    TTDS CW3
-                </p>
-                </footer> */}
+                <Reviews data={this.state.reviewInfo} func={this.changeState}/>
+                </section>
           </div>
             );
         }
@@ -208,28 +176,36 @@ class ReviewOverall extends React.Component{
 function reviewDetail(props){
     // props.name = 'a';
     // console.log(props)
-      return (
-      <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-      {/* <header className="first_reviewer"> */}
-          {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
-          <h3>Movie Name: {props.name}</h3>
-          <h3>Year: {props.year}</h3>
-          <h3>Average rating: {props.average}</h3>
-          <h3>Genre: {props.genre}</h3>
-          <h3>Review number: {props.number}</h3>
-          <Button style={{margin: "20px"}} type="primary">More Details</Button>
-      {/* </header> */}
-      {/* </div> */}
-      <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
-      </div>);
+
+    // function handleClickBtn3() {
+    //     this.setState({
+    //         isReceive: true
+    //     })
+    //   }
+    // console.log(props.func)
+    return (
+    <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+    {/* <header className="first_reviewer"> */}
+        {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
+        <h3>Movie Name: {props.name}</h3>
+        <h3>Year: {props.year}</h3>
+        <h3>Average rating: {props.average}</h3>
+        <h3>Genre: {props.genre}</h3>
+        <h3>Review number: {props.number}</h3>
+        <Button style={{margin: "20px"}} type="primary" onClick={props.func}>More Details</Button>
+    {/* </header> */}
+    {/* </div> */}
+    <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
+    </div>);
   }
   
   
-  function reviewList(nameList) {
+  function reviewList(nameList, a) {
     var nameDOM = [];
     for(var i = 0; i<nameList.length;i++){
-        console.log(nameList[i])
-      nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number}))
+        // console.log(nameList[i])
+      nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
+
       // nameDOM
     }
     return nameDOM;
@@ -237,13 +213,14 @@ function reviewDetail(props){
   
   function Reviews(reviewInfo) {
     // const a = this.state.reviewInfo
-    console.log(reviewInfo)
+    // console.log(reviewInfo.func)
+    // 将字典转换为列表
     var nameList = Object.values(reviewInfo.data)
-    console.log(nameList)
+    // console.log(nameList)
     // var nameList = ["Lingyun", "Yukino", "Nanami"];
     return (
       <div>
-        {reviewList(nameList)}
+        {reviewList(nameList, reviewInfo.func)}
       </div>
     )
   }
