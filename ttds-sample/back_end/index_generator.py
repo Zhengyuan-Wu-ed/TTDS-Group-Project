@@ -116,8 +116,78 @@ def normal_search(input, review_dic, inverted_index):
     return result_dic
 
 
-# List[5]; List[0] = movie name, List[1] = movie year, List[2] = average rating, List[3] = genre,
-# List[4] = the total number of reviews
+def review_result(result_dic, movieName, given_year=0):
+    print(len(result_dic))
+    all_review_result = {}
+    index = 0
+    index_string = 'index'
+    # print(movieName)
+    # print(given_year)
+    # year
+    # given_year = '1999'
+    # print(result_dic)
+    for k, v in result_dic.items():
+        # print(k)
+        if k == movieName.lower():
+            # print("SSSSSSSS")
+            # print(v)
+            requestMovie = v[str(given_year)]
+            # print(len(requestMovie[2]))
+            if len(requestMovie[2]) != 0:
+                # print(type(detail[2]))
+                # print(detail[2])
+                for review in requestMovie[2]:
+                    single_review_result = {}
+                    # print(review['reviewer'])
+                    # print(review['review_id'])
+                    # print(review['review_date'])
+                    # print(review['rating'])
+                    # print(review['review_detail'])
+                    single_review_result['reviewer'] = review['reviewer']
+                    single_review_result['reviewer_id'] = review['review_id']
+                    single_review_result['review_time'] = review['review_date']
+                    single_review_result['rating'] = review['rating']
+                    single_review_result['review_content'] = review['review_detail']
+                    # all_review_result[index_string+str(index)] = single_review_result
+                    index += 1
+                    # if(index <= 5):
+                    all_review_result[index_string+str(index)] = single_review_result
+        # for year, detail in v.items():
+        #     # print(type(year))
+        #     # print(type(given_year))
+        #     if (given_year ==0):
+        #         given_year = year
+        #     # if str(year) == str(given_year):
+        #     #     print("ssssssssss")
+        #     # else:
+        #     #     print(given_year)
+        #     #     print(year)
+        #     # print(given_year)
+        #     if (str(given_year) == str(year)) & (len(detail[2]) != 0):
+        #         # print(type(detail[2]))
+        #         # print(detail[2])
+        #         for review in detail[2]:
+        #             single_review_result = {}
+        #             # print(review['reviewer'])
+        #             # print(review['review_id'])
+        #             # print(review['review_date'])
+        #             # print(review['rating'])
+        #             # print(review['review_detail'])
+        #             single_review_result['reviewer'] = review['reviewer']
+        #             single_review_result['reviewer_id'] = review['review_id']
+        #             single_review_result['review_time'] = review['review_date']
+        #             single_review_result['rating'] = review['rating']
+        #             single_review_result['review_content'] = review['review_detail']
+        #             # all_review_result[index_string+str(index)] = single_review_result
+        #             index += 1
+        #             # if(index <= 5):
+        #             all_review_result[index_string+str(index)] = single_review_result
+                    # print(single_review_result)
+    
+    # print(all_review_result)
+    return all_review_result
+            
+                    
 def movie_result(result_dic, type='popularity'):
     all_movie_result = {}
     index = 1
@@ -206,9 +276,9 @@ def getResult(movie, review_dic, inverted_index):
     result_dic = normal_search(movie, review_dic, inverted_index)
     all_movie_result = movie_result(result_dic)
     # print(np.array(all_movie_result))
-    print(type(all_movie_result))
-    print(len(all_movie_result))
-    print(all_movie_result)
+    # print(type(all_movie_result))
+    # print(len(all_movie_result))
+    # print(all_movie_result)
 
     return all_movie_result
 
@@ -222,12 +292,18 @@ if __name__ == "__main__":
     # 影评分类的测试
     with open(result_file) as f:
         review_dic = json.load(f)
-    movie = 'enemy lines'
-    print(movie)
+    movie = 'The Matrix'
+    # year = '1999'
+    # print(movie)
     inverted_index = gii.generate_index(review_dic)
     result_dic = normal_search(movie, review_dic, inverted_index)
-    all_movie_result = movie_result(result_dic)
-    print(all_movie_result)
+    # for item, v in review_result(result_dic).items():
+    #     print(item)
+    #     print(v)
+    print(review_result(result_dic, movie, 1999))
+
+    # all_movie_result = movie_result(result_dic)
+    # print(all_movie_result)
     # get_movie = "hollywood"
     # getResult(get_movie)
 

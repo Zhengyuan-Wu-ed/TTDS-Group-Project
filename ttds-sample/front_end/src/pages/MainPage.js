@@ -72,7 +72,7 @@ class MainPage extends React.Component{
     }
 
     componentDidUpdate() {
-      console.log('a')
+      // console.log('a')
       var path = {
         pathname:'/ReviewOverall',
         state: {name:this.state.inputValue, review:this.state.reviewInfo},

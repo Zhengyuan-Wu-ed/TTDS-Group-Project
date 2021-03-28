@@ -4,7 +4,7 @@ import Item from 'antd/lib/list/Item';
 import React, { Component } from 'react';
 import HttpUtil from './HttpUtil';
 // import { Layout, Button} from 'antd';
- 
+import { useHistory, withRouter } from "react-router-dom";
 import './ReviewOverall.css';
 
 
@@ -24,7 +24,8 @@ class ReviewOverall extends React.Component{
             searchMovie: '',
             loading: true,
             isReceive: false,
-            reviewMovie: 'a',
+            reviewMovieDetail: [],
+            moviePageInfo: []
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
         // this.getData = this.getData.bind(this);
@@ -37,23 +38,40 @@ class ReviewOverall extends React.Component{
         })
     }
 
-    changeState = (movie) => {
+    changeState = (name) => {
+        console.log(name)
+        // var movieName = this.state.searchMovie
         this.setState({
-            reviewMovie: movie,
-            isReceive: true
+            reviewMovieDetail:name
         })
-        console.log(movie)
+        const nameYear = name.movieName+"'"+name.year
+        console.log(nameYear)
+        HttpUtil.post('/Reviews', nameYear)
+          .then(
+            reviewDic =>{
+                // this.allReviewData = reviewDic;
+                console.log(reviewDic)
+                // this.allReviewData = reviewDic
+                this.setState({
+                    moviePageInfo: reviewDic,
+                    isReceive: true
+                });
+            }
+        );
     };
-      
+    
   
     componentDidUpdate() {
     // console.log('a')
-    var path = {
-        pathname:'/MoviePage',
-        state: {review: this.props.location.state.review},
-    }
     if(this.state.isReceive){
-        console.log(this.props.location.state.review)
+
+        var path = {
+            pathname:'/MoviePage',
+            state: {reviewMovieDetail: this.state.reviewMovieDetail, moviePageInfo: this.state.moviePageInfo, review:this.state.reviewInfo},
+        }
+        // console.log(this.props.location.state.review)
+        console.log(path)
+        // console.log(this.state.moviePageInfo)
         // console.log(this.state.reviewMovie)
         this.props.history.push(path);
     }
@@ -101,7 +119,7 @@ class ReviewOverall extends React.Component{
                 </header>
                 <title>search_content</title>
                 <section className="review">
-                <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button>
+                {/* <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button> */}
                 <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
                 <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
                 <div id="menu" style={{backgroundColor: '#9191a5', height: '100%', width: '15%', float: 'left'}}>
@@ -165,6 +183,7 @@ class ReviewOverall extends React.Component{
                 {/* <div style={{backgroundColor: '#EEEEEE'}}> */}
                 
                 <Reviews data={this.state.reviewInfo} func={this.changeState}/>
+                {/* <reviewDetail func={this.changeState}/> */}
                 </section>
           </div>
             );
@@ -177,11 +196,11 @@ function reviewDetail(props){
     // props.name = 'a';
     // console.log(props)
 
-    // function handleClickBtn3() {
-    //     this.setState({
-    //         isReceive: true
-    //     })
-    //   }
+    function handleClickBtn3() {
+        // props.func;
+        console.log("a")
+        props.func({movieName:props.name, year:props.year, averageRating:props.averageRating})
+      }
     // console.log(props.func)
     return (
     <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
@@ -189,10 +208,10 @@ function reviewDetail(props){
         {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
         <h3>Movie Name: {props.name}</h3>
         <h3>Year: {props.year}</h3>
-        <h3>Average rating: {props.average}</h3>
+        <h3>Average rating: {props.averageRating}</h3>
         <h3>Genre: {props.genre}</h3>
         <h3>Review number: {props.number}</h3>
-        <Button style={{margin: "20px"}} type="primary" onClick={props.func}>More Details</Button>
+        <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button>
     {/* </header> */}
     {/* </div> */}
     <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
@@ -240,6 +259,7 @@ class ReviewDetail extends Component {
                     <h3>Average rating: {this.props.average}</h3>
                     <h3>Genre: {this.props.genre}</h3>
                     <h3>Review number: {this.props.number}</h3>
+                    <Button style={{margin: "20px"}} type="primary" onClick={this.props.func}>More Details</Button>
                 {/* </header> */}
                 {/* </div> */}
             </div>

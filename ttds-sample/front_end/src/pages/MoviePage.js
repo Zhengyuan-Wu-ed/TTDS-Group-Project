@@ -13,6 +13,8 @@ class MoviePage extends React.Component{
       super(props);
       this.state={
           reviewInfo: [],
+          reviewMovieDetail: [],
+          moviePageInfo: [],
           searchMovie: '',
           loading: true,
           isReceive: false,
@@ -32,20 +34,25 @@ class MoviePage extends React.Component{
   componentDidMount () {
     this._isMounted = true;
     var data = this.props.location.state;
-    if (data){
-        // console.log(data.name)
-        // console.log(data)
-        // var {name} = data
-        this.setState({
-            searchMovie: data.name,
-        })
-    }
+    // if (data){
+    //     // console.log(data.name)
+    //     // console.log(data)
+    //     // var {name} = data
+    //     this.setState({
+    //         searchMovie: data.name,
+    //     })
+    // }
     if (this.props.location.state){
         this.setState({
             reviewInfo:this.props.location.state.review,
+            reviewMovieDetail:this.props.location.state.reviewMovieDetail,
+            moviePageInfo: this.props.location.state.moviePageInfo,
+            
             loading: false
         });
     }
+    console.log(this.props.location.state.moviePageInfo)
+    console.log(this.props.location.state.reviewMovieDetail)
   }
 
   componentWillUnmount() {
@@ -108,48 +115,16 @@ class MoviePage extends React.Component{
             </ul>
           </div>
           <div style={{backgroundColor: 'white', height: '200px'}}>
-            <h2 style={{color: 'coral'}}>movie name:{this.props.location.state.review.index1.movieName} </h2>
-            <h2 style={{color: 'crimson'}}>year: {this.props.location.state.review.index1.year}</h2>
-            <h2 style={{color: 'crimson'}}>score: {this.props.location.state.review.index1.averageRating}</h2>
+            <h2 style={{color: 'coral'}}>movie name:{this.state.reviewMovieDetail.movieName} </h2>
+            <h2 style={{color: 'crimson'}}>year: {this.state.reviewMovieDetail.year}</h2>
+            <h2 style={{color: 'crimson'}}>score: {this.state.reviewMovieDetail.averageRating}</h2>
           </div>
           {/* <div id="content" style={{backgroundColor: '#7c1d5c', width: '85%', float: 'left'}}> */}
             {/*component*/}
             <div>
-              <ReviewDetail />
-              <ReviewDetail />
-              <ReviewDetail />
-              </div>
-              {/* <header className="first_reviewer">
-                <h3>Reviewer: </h3>
-                <h3>Reviewer ID: </h3>
-                <h3>review time: </h3>
-                <h3>rating: </h3>
-                <h3>review content :</h3>
-              </header> */}
-            {/* </div> */}
-            {/* <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="100%" color=#987cb9 SIZE=3>
-                <div class='first_review'>
-                    <header class='first_reviewer'>
-                        <h3>Reviewer: </h3>
-                        <h3>Reviewer ID: </h3>
-                        <h3>review time: </h3>
-                        <h3>rating: </h3>
-                    </header>
-    
-    
-                </div> */}
-            {/* <hr style={{border: '1 dashed #987cb9'}} width="100%" color="#987cb9" size={1} /> */}
-            {/*<div className="page">*/}
-            {/*  <a href="#" className="first">首页</a>*/}
-            {/*  <a href="#" className="prev">&lt;pre</a>*/}
-            {/*  <a href="#">1</a>*/}
-            {/*  <a href="#">2</a>*/}
-            {/*  <a href="#">3</a>*/}
-            {/*  <a href="#">4</a>*/}
-            {/*  <a href="#">5</a>*/}
-            {/*  <a href="#" className="next">&gt;next</a>*/}
-            {/*  <a href="#" className="last">last page</a>*/}
-            {/*</div>*/}
+              <Reviews data={this.state.moviePageInfo} />
+            </div>
+
             <div style={{height: '200px', backgroundColor: 'white', color: 'black'}}>
               <h1>user name</h1>
               <h1>rating</h1>
@@ -171,6 +146,60 @@ class MoviePage extends React.Component{
     );
   }
 }
+
+function reviewDetail(props){
+  // props.name = 'a';
+  // console.log(props)
+
+  // function handleClickBtn3() {
+  //     // props.func;
+  //     console.log("a")
+  //     props.func({movieName:props.name, year:props.year, averageRating:props.averageRating})
+  //   }
+  // console.log(props.func)
+  return (
+  <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+  {/* <header className="first_reviewer"> */}
+      {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
+      <h3>Reviewer: {props.reviewer}</h3>
+      <h3>Reviewer ID: {props.reviewer_id}</h3>
+      <h3>Review Time: {props.review_time}</h3>
+      <h3>Rating: {props.rating}</h3>
+      <h3>Review Content: {props.review_content}</h3>
+      {/* <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> */}
+  {/* </header> */}
+  {/* </div> */}
+  <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
+  </div>);
+}
+
+
+function reviewList(nameList) {
+  var nameDOM = [];
+  for(var i = 0; i<nameList.length;i++){
+      // console.log(nameList[i])
+    nameDOM.push(reviewDetail({reviewer: nameList[i].reviewer, reviewer_id:nameList[i].reviewer_id, review_time:nameList[i].review_time, rating: nameList[i].rating, review_content:nameList[i].review_content}))
+    // nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
+
+    // nameDOM
+  }
+  return nameDOM;
+}
+
+function Reviews(reviewInfo) {
+  // const a = this.state.reviewInfo
+  // console.log(reviewInfo.func)
+  // 将字典转换为列表
+  var nameList = Object.values(reviewInfo.data)
+  // console.log(nameList)
+  // var nameList = ["Lingyun", "Yukino", "Nanami"];
+  return (
+    <div>
+      {reviewList(nameList)}
+    </div>
+  )
+}
+
 
 class ReviewDetail extends Component {
 

@@ -4,6 +4,7 @@ from flask import request;
 # import search as sc;
 import index_generator as ig;
 import get_inverted_index as gii;
+import Review_Content_Search as rcs
 import json
 # app = Flask(__name__);
 app = Flask(__name__, template_folder='../front_end', static_folder='../front_end/build/static')
@@ -16,6 +17,10 @@ with open(result_file) as f:
     review_dic = json.load(f)
 # movie = 'hollywood'
 inverted_index = gii.generate_index(review_dic)
+
+# review_Content_Searcher = rcs.Review_Content_Searcher()
+# result = review_Content_Searcher.search("feel emotionally connected")
+# print(result)
 # result_dic = ig.normal_search(movie, review_dic, inverted_index)
 # all_movie_result = ig.movie_result(result_dic)
 # print(all_movie_result)
@@ -42,6 +47,31 @@ def home_page():
 #     keyword = request.args.get('wd');
 #     return ig.normal_search(keyword);
 #在搜索界面可以自定义要替换的字符 然后再之后用 .replace("图片地址1",“图片地址2”) 类似的想法
+@app.route('/Reviews', methods=['POST'])
+def getReviews():
+    # re = {'a':'a'}
+    # review_dic = []
+    data = request.get_data(as_text=True)
+    data = data.replace('"',"")
+    print(data)
+    print(type(data))
+    movieName = data.split("'")[0].lower()
+    year = data.split("'")[1]
+    print(movieName)
+    print(year)
+    # data = data.split('"')[1].lower()
+    # print(data)
+    # name = data["movie"]
+    if movieName != "":
+        result_dic = ig.normal_search(movieName, review_dic, inverted_index)
+        all_reviews = ig.review_result(result_dic,movieName,year)
+        # session["review_"+data] = ig.review_result(result_dic)
+    print("Back-end data: "+data)
+    # return json.dumps(re)
+    # print(session.get(("review_"+data).lower()))
+    # print(len(session.get(("review_"+data))))
+    # return session.get(("review_"+data))
+    return all_reviews
 
 @app.route('/ReviewOverall'+'/<name>', methods=['GET'])
 def getMoiveReview(name):
@@ -75,6 +105,7 @@ def getReview():
         # print(session.get('review_dic'))
         print("Back-end data: "+data)
     # return json.dumps(re)
+    
     return session.get(data.lower())
 
 if __name__ =="__main__":
