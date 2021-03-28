@@ -89,13 +89,13 @@ p{
 
 .filters {
     flex-shrink: 0;
+    margin-left: 2px;
     background: rgba(0,0,0,.05);
     color: white(0,0,0,.9);
     cursor: default;
     padding: 34px 0;
     min-width: 236px;
 }
-
 div {
     display: block;
 }

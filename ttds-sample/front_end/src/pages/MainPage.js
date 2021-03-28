@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React,{ Component } from 'react';
 import { Layout, Button} from 'antd';
  
 import './MainPage.css';
@@ -8,7 +8,34 @@ import { Link} from "react-router-dom";
 import HttpUtil from './HttpUtil';
 import ApiUtil from './ApiUtil';
 const { Header, Content } = Layout;
- 
+
+
+
+// class ReviewDetail extends Component {
+//   var 
+//   render() {
+//       return (
+//           // <div id="content" style = {{backgroundColor: '#EEEEE', height: '100%', width: '85%', float: 'left'}}>
+
+//           // </div>
+//           // <div id="content" style={{backgroundColor: '#EEEEEE', height: '100%', width: '85%', float: 'left'}}>
+//               <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+//               {/* <header className="first_reviewer"> */}
+//                   <h3>Movie Name: {this.props.movie}</h3>
+//                   <h3>Year: {this.props.year}</h3>
+//                   <h3>Average rating: {this.props.average}</h3>
+//                   <h3>Genre: {this.props.genre}</h3>
+//                   <h3>Review number: {this.props.number}</h3>
+//               {/* </header> */}
+//               {/* </div> */}
+//           </div>
+//       );
+//   }
+// }
+
+
+
+
 class MainPage extends React.Component{
     constructor(props) {
         super(props);
@@ -39,27 +66,13 @@ class MainPage extends React.Component{
               this.setState({
                   reviewInfo: reviewDic,
                   isReceive: true
-              }, () => {
-                console.log(this.state.reviewInfo)
-                console.log('123')
               });
-              console.log(this.state.reviewInfo)
-              console.log(reviewDic)
           }
       );
-      // var path = `/ReviewOverall/${movieName}`
-      // if (this.state.reviewInfo != ''){
-      //   console.log("yes")
-      //   console.log(this.state.reviewInfo)
-      // }
-      // var path = {
-      //   pathname:'/ReviewOverall',
-      //   state: {name:movieName, review:this.state.reviewInfo},
-      // }
-      // this.props.history.push(path);
     }
 
     componentDidUpdate() {
+      console.log('a')
       var path = {
         pathname:'/ReviewOverall',
         state: {name:this.state.inputValue, review:this.state.reviewInfo},
@@ -87,7 +100,9 @@ class MainPage extends React.Component{
               <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Search</Button>
               <input type="radio" className="selector" name="choice" defaultValue="movies name" />movie
               <input type="radio" className="selector" name="choice" defaultValue="review" />review
-            </section>  
+
+              {/* <Root /> */}
+            </section>
             <footer>
               <p>
                 TTDS CW3

@@ -6,7 +6,7 @@ import string
 from stemming.porter2 import stem
 
 def load_English_stop_words():
-    data_path = os.path.join(os.getcwd(),'data','englishST.txt')
+    data_path = os.path.join(os.getcwd(),'','englishST.txt')
     ref_file = open(data_path, "r")
     English_stop_words = []#store English stop words
     for ref_line in ref_file.readlines():
@@ -14,7 +14,7 @@ def load_English_stop_words():
     return(English_stop_words)
 
 def write_review_indexing_ToFile(filename='review_indexing.txt'):
-    data_path = os.path.join(os.getcwd(), 'data', filename)
+    data_path = os.path.join(os.getcwd(), '', filename)
     file_write = open(data_path, "w",encoding='utf-8')
     for word, second_dic in words_dic.items():
         file_write.write(word+':'+str(len(words_dic[word]))+'\n')#word和它出现在多少篇doc里
@@ -27,7 +27,7 @@ def write_review_indexing_ToFile(filename='review_indexing.txt'):
 
 #Main:
 print('Loading result.json')
-data_path = os.path.join(os.getcwd(),'data','result.json')
+data_path = os.path.join(os.getcwd(),'','result.json')
 with open(data_path) as f:
     data = json.load(f)
 

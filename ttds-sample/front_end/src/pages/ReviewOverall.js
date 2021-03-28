@@ -23,39 +23,45 @@ class ReviewOverall extends React.Component{
             reviewInfo: [],
             searchMovie: '',
             loading: true,
+            isReceive: false,
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
-        this.getData = this.getData.bind(this);
+        // this.getData = this.getData.bind(this);
+        this.handleClickBtn2 = this.handleClickBtn2.bind(this)
     }
+    handleClickBtn2(event) {
+        this.setState({
+            isReceive: true
+        })
+      }
+  
+      componentDidUpdate() {
+        // console.log('a')
+        var path = {
+          pathname:'/MoviePage',
+          state: {review: this.props.location.state.review},
+        }
+        if(this.state.isReceive){
+          console.log(this.props.location.state.review)
+          this.props.history.push(path);
+        }
+      }
     componentDidMount () {
         this._isMounted = true;
         var data = this.props.location.state;
         if (data){
-            console.log(data.name)
-            console.log(data)
+            // console.log(data.name)
+            // console.log(data)
             var {name} = data
             this.setState({
                 searchMovie: data.name,
             })
         }
         if (this.props.location.state){
-            HttpUtil.get('/ReviewOverall/'+this.props.location.state.name)
-            .then(
-                reviewDic =>{
-
-                    // allReviewData = reviewDic
-                    this.setState({
-                        // reviewInfo: reviewDic
-                        reviewInfo: reviewDic,
-                        loading: false
-                    });
-                    console.log(this.state.searchMovie)
-                    console.log(this.state.reviewInfo)
-                    console.log(this.state.loading)
-                }
-            ).catch(error=>{
-                message.error(error.message)
-            })
+            this.setState({
+                reviewInfo:this.props.location.state.review,
+                loading: false
+            });
         }
         
     }
@@ -66,44 +72,28 @@ class ReviewOverall extends React.Component{
     handleClickBtn(event) {
         this.props.history.push("/");
     }
-    getData(){
-        if (this.props.location.state){
-            HttpUtil.get('/ReviewOverall/'+this.props.location.state.name)
-            .then(
-                reviewDic =>{
+    // getData(){
+    //     if (this.props.location.state){
+    //         this.setState({
+    //             reviewInfo:this.props.location.state.review
+    //         });
+    //         // HttpUtil.get('/ReviewOverall/'+this.props.location.state.name)
+    //         // .then(
+    //         //     reviewDic =>{
 
-                    // allReviewData = reviewDic
-                    this.setState({
-                        // reviewInfo: reviewDic
-                        reviewInfo: reviewDic
-                    });
-                    console.log(this.state.searchMovie)
-                    console.log(this.state.reviewInfo)
-                }
-            ).catch(error=>{
-                message.error(error.message)
-            })
-        }
-        // console.log(this.state.reviewInfo)
-        // HttpUtil.get('/ReviewOverall',this.props.location.state.name)
-        //     .then(
-        //         reviewDic =>{
-        //             // this.allReviewData = reviewDic;
-        //             // console.log(reviewDic)
-        //             this.allReviewData = reviewDic
-        //             this.setState({
-        //                 reviewInfo: reviewDic
-        //             });
-        //             console.log(this.state.reviewInfo.index1)
-        //             // console.log(this.allReviewData)
-        //         }
-        //     ).catch(error=>{
-        //         message.error(error.message)
-        //     })
-        
-        //     console.log(this.state.reviewInfo)
-                    
-    }
+    //         //         // allReviewData = reviewDic
+    //         //         this.setState({
+    //         //             // reviewInfo: reviewDic
+    //         //             reviewInfo: reviewDic
+    //         //         });
+    //         //         console.log(this.state.searchMovie)
+    //         //         console.log(this.state.reviewInfo)
+    //         //     }
+    //         // ).catch(error=>{
+    //         //     message.error(error.message)
+    //         // })
+    //     }           
+    // }
     
 
     render(){
@@ -115,25 +105,99 @@ class ReviewOverall extends React.Component{
         }
             return (
                 <div>
+                <header className="main_header">
+                    <figure>
+                        <img src="images/logo.png" alt="logo" />
+                    </figure>
+                </header>
                 <title>search_content</title>
                 <section className="review">
-                <Button style={{margin:"20px"}} type="primary" onClick={this.getData}>Get Data</Button>
+                <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button>
                 <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
                 <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
-                <div>
-                    <ReviewDetail movie={this.state.reviewInfo.index1? this.state.reviewInfo.index1.movieName: "Unknow"} year={this.state.reviewInfo.index1.year} average={this.state.reviewInfo.index1.averageRating} genre = {this.state.reviewInfo.index1.genre} number={this.state.reviewInfo.index1.number}/>
+                <div id="menu" style={{backgroundColor: '#9191a5', height: '100%', width: '15%', float: 'left'}}>
+    ``              <ul className="filters">
+                    <li className="section expanded">
+                    <div className="title">
+                        <div className="expand">
+                        </div>
+                        <h2>Sort by</h2>
+                    </div>
+                    <ul>
+                        <li>
+                        <input type="radio" name="sort" defaultValue="popular" data-default defaultChecked />
+                        <span>Popular</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="sort" defaultValue="newest" />
+                        <span>New Releases</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="sort" defaultValue="Rating" />
+                        <span>Rating</span>
+                        </li>
+                    </ul>
+                    </li>
+                    <li className="section expanded">
+                    <div className="title">
+                        <div className="expand">
+                        </div>
+                        <h2>GENRE</h2>
+                    </div>
+                    <ul>
+                        <li>
+                        <input type="radio" name="genere" defaultValue="popular" data-default defaultChecked />
+                        <span>Action</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="genere" defaultValue="newest" />
+                        <span>Thriller</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="genere" defaultValue="Rating" />
+                        <span>Romance</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="genere" defaultValue="Rating" />
+                        <span>Adventure</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="genere" defaultValue="Rating" />
+                        <span>Fantasy</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="genere" defaultValue="Rating" />
+                        <span>Drama</span>
+                        </li>
+                    </ul>
+                    </li>
+                </ul>
+                </div>
+                {/* <div style={{backgroundColor: '#EEEEEE'}}> */}
+                
+                <Reviews data={this.state.reviewInfo}/>
+                    {/* <ReviewDetail movie={this.state.reviewInfo.index1? this.state.reviewInfo.index1.movieName: "Unknow"} year={this.state.reviewInfo.index1.year} average={this.state.reviewInfo.index1.averageRating} genre = {this.state.reviewInfo.index1.genre} number={this.state.reviewInfo.index1.number}/>
                     <ReviewDetail />
-                    <ReviewDetail />       
-                </div>
-                <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+                    <ReviewDetail />        */}
+                {/* </div> */}
+                {/* <div className="first_review" style={{backgroundColor: '#EEEEEE'}}> */}
                 {/* <h1>{this.props.location.state.name == "The Matrix" ? 'b': 'a'}</h1> */}
-                </div>
+                {/* </div> */}
                 </section>  
-                <footer>
+                {/* <div style={{height: '200px', backgroundColor: 'white', color: 'black'}}>
+                <h1>user name</h1>
+                <h1>rating</h1>
+                <form action="/exampleml/form_action.asp" method="get">
+                    <p><input type="checkbox" name="vehicle" defaultValue="Bike" /> Does it contains spoiler ?</p>
+                </form>
+                <textarea style={{minHeight: '100px', minWidth: '800px', maxHeight: '100px', maxWidth: '800px'}} cols={80} rows={5} defaultValue={""} />
+                <button>submit</button>
+                </div>   */}
+                {/* <footer>
                 <p>
                     TTDS CW3
                 </p>
-                </footer>
+                </footer> */}
           </div>
             );
         }
@@ -141,7 +205,51 @@ class ReviewOverall extends React.Component{
 
 }
 
+function reviewDetail(props){
+    // props.name = 'a';
+    // console.log(props)
+      return (
+      <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+      {/* <header className="first_reviewer"> */}
+          {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
+          <h3>Movie Name: {props.name}</h3>
+          <h3>Year: {props.year}</h3>
+          <h3>Average rating: {props.average}</h3>
+          <h3>Genre: {props.genre}</h3>
+          <h3>Review number: {props.number}</h3>
+          <Button style={{margin: "20px"}} type="primary">More Details</Button>
+      {/* </header> */}
+      {/* </div> */}
+      <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
+      </div>);
+  }
+  
+  
+  function reviewList(nameList) {
+    var nameDOM = [];
+    for(var i = 0; i<nameList.length;i++){
+        console.log(nameList[i])
+      nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number}))
+      // nameDOM
+    }
+    return nameDOM;
+  }
+  
+  function Reviews(reviewInfo) {
+    // const a = this.state.reviewInfo
+    console.log(reviewInfo)
+    var nameList = Object.values(reviewInfo.data)
+    console.log(nameList)
+    // var nameList = ["Lingyun", "Yukino", "Nanami"];
+    return (
+      <div>
+        {reviewList(nameList)}
+      </div>
+    )
+  }
+
 class ReviewDetail extends Component {
+
     render() {
         return (
             // <div id="content" style = {{backgroundColor: '#EEEEE', height: '100%', width: '85%', float: 'left'}}>

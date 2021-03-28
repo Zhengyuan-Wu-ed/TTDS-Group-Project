@@ -25,8 +25,8 @@ class Review_Content_Searcher:
 
 #从txt文件中读取并重新构建字典：words_dic
 def read_words_indexing():
-    # data_path = os.path.join(os.getcwd(),'review_indexing.txt')
-    data_path = "C:\\Users\\WZY\\miniconda3\\envs\\TTDS\\TTDS\\review_indexing.txt"
+    data_path = os.path.join(os.getcwd(),'review_indexing.txt')
+    # data_path = "C:\\Users\\WZY\\miniconda3\\envs\\TTDS\\TTDS\\review_indexing.txt"
     file_read = open(data_path,'r',encoding='utf-8')
     print("Loading from",data_path)
     
@@ -51,7 +51,7 @@ def read_words_indexing():
     return words_dic
 
 def load_English_stop_words():
-    data_path = os.path.join(os.getcwd(),'data','englishST.txt')
+    data_path = os.path.join(os.getcwd(),'','englishST.txt')
     ref_file = open(data_path, "r")
     English_stop_words = []#store English stop words
     for ref_line in ref_file.readlines():
