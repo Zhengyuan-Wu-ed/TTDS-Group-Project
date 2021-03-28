@@ -7,33 +7,6 @@ import myIcon from '../images/logo.png';
 import { Link} from "react-router-dom";
 import HttpUtil from './HttpUtil';
 import ApiUtil from './ApiUtil';
-const { Header, Content } = Layout;
-
-
-
-// class ReviewDetail extends Component {
-//   var 
-//   render() {
-//       return (
-//           // <div id="content" style = {{backgroundColor: '#EEEEE', height: '100%', width: '85%', float: 'left'}}>
-
-//           // </div>
-//           // <div id="content" style={{backgroundColor: '#EEEEEE', height: '100%', width: '85%', float: 'left'}}>
-//               <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-//               {/* <header className="first_reviewer"> */}
-//                   <h3>Movie Name: {this.props.movie}</h3>
-//                   <h3>Year: {this.props.year}</h3>
-//                   <h3>Average rating: {this.props.average}</h3>
-//                   <h3>Genre: {this.props.genre}</h3>
-//                   <h3>Review number: {this.props.number}</h3>
-//               {/* </header> */}
-//               {/* </div> */}
-//           </div>
-//       );
-//   }
-// }
-
-
 
 
 class MainPage extends React.Component{

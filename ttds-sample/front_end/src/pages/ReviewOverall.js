@@ -26,11 +26,14 @@ class ReviewOverall extends React.Component{
             isReceive: false,
             reviewMovieDetail: [],
             moviePageInfo: [],
-            currentPage:1
+            currentPage:1,
+            sort_type: "",
+            isSort: false
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
         // this.getData = this.getData.bind(this);
-        this.handleClickBtn2 = this.handleClickBtn2.bind(this)
+        this.handleClickBtn2 = this.handleClickBtn2.bind(this);
+        this.changeSort = this.changeSort.bind(this);
         this.changeState = this.changeState.bind(this)
     }
     handleClickBtn2(event) {
@@ -39,7 +42,15 @@ class ReviewOverall extends React.Component{
             currentPage: this.state.currentPage+1
         })
     }
-
+    changeSort(type){
+        // console.log(type)
+        this.setState({
+            sort_type:type,
+            currentPage: 1,
+            isSort: true
+        })
+    }
+    
     changeState = (name) => {
         console.log(name)
         // var movieName = this.state.searchMovie
@@ -65,18 +76,39 @@ class ReviewOverall extends React.Component{
   
     componentDidUpdate() {
     // console.log('a')
-    if(this.state.isReceive){
+        if(this.state.isReceive){
 
-        var path = {
-            pathname:'/MoviePage',
-            state: {reviewMovieDetail: this.state.reviewMovieDetail, moviePageInfo: this.state.moviePageInfo, review:this.state.reviewInfo},
+            var path = {
+                pathname:'/MoviePage',
+                state: {reviewMovieDetail: this.state.reviewMovieDetail, moviePageInfo: this.state.moviePageInfo, review:this.state.reviewInfo},
+            }
+            // console.log(this.props.location.state.review)
+            console.log(path)
+            // console.log(this.state.moviePageInfo)
+            // console.log(this.state.reviewMovie)
+            this.props.history.push(path);
         }
-        // console.log(this.props.location.state.review)
-        console.log(path)
-        // console.log(this.state.moviePageInfo)
-        // console.log(this.state.reviewMovie)
-        this.props.history.push(path);
-    }
+        if(this.state.isSort){
+            // /ReviewsSort
+            console.log(this.state.searchMovie)
+            console.log(this.state.sort_type)
+            const nameType = this.state.searchMovie+"'"+this.state.sort_type
+            console.log(nameType)
+            HttpUtil.post('/ReviewsSort', nameType)
+            .then(
+                reviewDic =>{
+                    // this.allReviewData = reviewDic;
+                    console.log(reviewDic)
+                    // this.allReviewData = reviewDic
+                    this.setState({
+                        reviewInfo: reviewDic,
+                        // isReceive: true
+                        
+                        isSort:false
+                    });
+                }
+            );
+        }
     }
     componentDidMount () {
         this._isMounted = true;
@@ -134,15 +166,19 @@ class ReviewOverall extends React.Component{
                     </div>
                     <ul>
                         <li>
-                        <input type="radio" name="sort" defaultValue="popular" data-default defaultChecked />
+                        <input type="radio" name="sort" data-default defaultChecked onClick={this.changeSort.bind(this,"relevance")}/>
+                        <span>Relevance</span>
+                        </li>
+                        <li>
+                        <input type="radio" name="sort" defaultValue="popular" onClick={this.changeSort.bind(this,"popularity")}/>
                         <span>Popular</span>
                         </li>
                         <li>
-                        <input type="radio" name="sort" defaultValue="newest" />
+                        <input type="radio" name="sort" defaultValue="newest" onClick={this.changeSort.bind(this,"year")}/>
                         <span>New Releases</span>
                         </li>
                         <li>
-                        <input type="radio" name="sort" defaultValue="Rating" />
+                        <input type="radio" name="sort" defaultValue="Rating" onClick={this.changeSort.bind(this,"rating")}/>
                         <span>Rating</span>
                         </li>
                     </ul>
@@ -195,15 +231,16 @@ class ReviewOverall extends React.Component{
 }
 
 function reviewDetail(props){
-    // props.name = 'a';
-    // console.log(props)
 
     function handleClickBtn3() {
         // props.func;
-        console.log("a")
+        // console.log("a")
         props.func({movieName:props.name, year:props.year, averageRating:props.averageRating})
       }
     // console.log(props.func)
+    // if (props.year == 0){
+    //     this.isShow = false;
+    // }
     return (
     <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
     {/* <header className="first_reviewer"> */}
@@ -213,7 +250,8 @@ function reviewDetail(props){
         <h3>Average rating: {props.averageRating}</h3>
         <h3>Genre: {props.genre}</h3>
         <h3>Review number: {props.number}</h3>
-        <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button>
+        
+        {props.year != '0' && props.number != '0' ? <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> : ""}
     {/* </header> */}
     {/* </div> */}
     <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
@@ -223,7 +261,7 @@ function reviewDetail(props){
   
   function reviewList(nameList, a, currentPage) {
     var nameDOM = [];
-    console.log(currentPage)
+    // console.log(currentPage)
     for(var i = 0; i<currentPage*2;i++){
         // console.log(nameList[i])
         if (i<nameList.length){
