@@ -22,7 +22,7 @@ class Review_Content_Searcher:
             if review['review_id'] == (review_id):
                 returned_review_dic = review.copy()
                 del returned_review_dic['helpful']
-                returned_review_dic['publish_date'] = returned_review_dic['movie'][1]
+                returned_review_dic['year'] = returned_review_dic['movie'][1]
                 returned_review_dic['movie'] = returned_review_dic['movie'][0]
                 returned_review_dic["category"] = main_dictionary[movie_name][year][1]
                 return returned_review_dic
