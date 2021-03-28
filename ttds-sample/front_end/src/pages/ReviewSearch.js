@@ -2,13 +2,12 @@ import {Button, message} from 'antd';
 import Item from 'antd/lib/list/Item';
 import React, {Component} from 'react';
 import HttpUtil from './HttpUtil';
-import MovieReviews from "./MovieReviews";
 
 class ReviewSearch extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
+            loading: false,
         }
     }
 
@@ -49,7 +48,7 @@ class ReviewSearch extends React.Component {
                         <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9"
                             size={3}/>
                         <div className="page">
-                            <a href="#" className="first">首页</a>
+                            <a href="#" className="first">HomePage</a>
                             <a href="#" className="prev">&lt;pre</a>
                             <a href="#">1</a>
                             <a href="#">2</a>

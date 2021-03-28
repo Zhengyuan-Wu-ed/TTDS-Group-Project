@@ -25,7 +25,8 @@ class ReviewOverall extends React.Component{
             loading: true,
             isReceive: false,
             reviewMovieDetail: [],
-            moviePageInfo: []
+            moviePageInfo: [],
+            currentPage:1
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
         // this.getData = this.getData.bind(this);
@@ -33,8 +34,9 @@ class ReviewOverall extends React.Component{
         this.changeState = this.changeState.bind(this)
     }
     handleClickBtn2(event) {
+        console.log(this.state.currentPage)
         this.setState({
-            isReceive: true
+            currentPage: this.state.currentPage+1
         })
     }
 
@@ -119,7 +121,7 @@ class ReviewOverall extends React.Component{
                 </header>
                 <title>search_content</title>
                 <section className="review">
-                {/* <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button> */}
+                <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button>
                 <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
                 <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
                 <div id="menu" style={{backgroundColor: '#9191a5', height: '100%', width: '15%', float: 'left'}}>
@@ -182,7 +184,7 @@ class ReviewOverall extends React.Component{
                 </div>
                 {/* <div style={{backgroundColor: '#EEEEEE'}}> */}
                 
-                <Reviews data={this.state.reviewInfo} func={this.changeState}/>
+                <Reviews data={this.state.reviewInfo} func={this.changeState} currentPage ={this.state.currentPage}/>
                 {/* <reviewDetail func={this.changeState}/> */}
                 </section>
           </div>
@@ -219,11 +221,14 @@ function reviewDetail(props){
   }
   
   
-  function reviewList(nameList, a) {
+  function reviewList(nameList, a, currentPage) {
     var nameDOM = [];
-    for(var i = 0; i<nameList.length;i++){
+    console.log(currentPage)
+    for(var i = 0; i<currentPage*2;i++){
         // console.log(nameList[i])
-      nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
+        if (i<nameList.length){
+            nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
+        }
 
       // nameDOM
     }
@@ -239,7 +244,7 @@ function reviewDetail(props){
     // var nameList = ["Lingyun", "Yukino", "Nanami"];
     return (
       <div>
-        {reviewList(nameList, reviewInfo.func)}
+        {reviewList(nameList, reviewInfo.func, reviewInfo.currentPage)}
       </div>
     )
   }

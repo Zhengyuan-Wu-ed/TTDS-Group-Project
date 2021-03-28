@@ -18,10 +18,12 @@ class MoviePage extends React.Component{
           searchMovie: '',
           loading: true,
           isReceive: false,
+          currentPage:1
       }
       this.handleClickBtn = this.handleClickBtn.bind(this);
       // this.getData = this.getData.bind(this);
       this.handleClickBtn2 = this.handleClickBtn2.bind(this)
+      this.handleClickBtn3 = this.handleClickBtn3.bind(this)
   }
   handleClickBtn(event) {
     this.props.history.push("/");
@@ -29,6 +31,11 @@ class MoviePage extends React.Component{
   handleClickBtn2(event) {
     this.setState({
         isReceive: true
+    })
+  }
+  handleClickBtn3(event) {
+    this.setState({
+      currentPage : this.state.currentPage+1
     })
   }
   componentDidMount () {
@@ -81,7 +88,7 @@ class MoviePage extends React.Component{
         </header>
         <section className="review">
           <div id="search" style={{backgroundColor: 'black', width: '100%', float: 'left'}}>
-            
+            <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn3}>Next Page</Button>
             <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>All Review Results</Button>
             <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
             <input type="text" className="search_content" /><input type="radio" className="selector" name="choice" defaultValue="movies name" />movie<input type="radio" className="selector" name="choice" defaultValue="review" />review<br />
@@ -122,7 +129,7 @@ class MoviePage extends React.Component{
           {/* <div id="content" style={{backgroundColor: '#7c1d5c', width: '85%', float: 'left'}}> */}
             {/*component*/}
             <div>
-              <Reviews data={this.state.moviePageInfo} />
+              <Reviews data={this.state.moviePageInfo} currentPage={this.state.currentPage}/>
             </div>
 
             <div style={{height: '200px', backgroundColor: 'white', color: 'black'}}>
@@ -174,11 +181,14 @@ function reviewDetail(props){
 }
 
 
-function reviewList(nameList) {
+function reviewList(nameList, currentPage) {
   var nameDOM = [];
-  for(var i = 0; i<nameList.length;i++){
+  console.log(currentPage)
+  for(var i = 0; i<currentPage*2;i++){
       // console.log(nameList[i])
-    nameDOM.push(reviewDetail({reviewer: nameList[i].reviewer, reviewer_id:nameList[i].reviewer_id, review_time:nameList[i].review_time, rating: nameList[i].rating, review_content:nameList[i].review_content}))
+      if(i<nameList.length){
+        nameDOM.push(reviewDetail({reviewer: nameList[i].reviewer, reviewer_id:nameList[i].reviewer_id, review_time:nameList[i].review_time, rating: nameList[i].rating, review_content:nameList[i].review_content}))
+      }
     // nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
 
     // nameDOM
@@ -195,7 +205,7 @@ function Reviews(reviewInfo) {
   // var nameList = ["Lingyun", "Yukino", "Nanami"];
   return (
     <div>
-      {reviewList(nameList)}
+      {reviewList(nameList,reviewInfo.currentPage)}
     </div>
   )
 }
