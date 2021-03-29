@@ -33,7 +33,6 @@ class ReviewOverall extends React.Component{
         this.handleClickBtn = this.handleClickBtn.bind(this);
         // this.getData = this.getData.bind(this);
         this.handleClickBtn2 = this.handleClickBtn2.bind(this);
-        this.changeSort = this.changeSort.bind(this);
         this.changeState = this.changeState.bind(this)
     }
     handleClickBtn2(event) {

@@ -16,14 +16,20 @@ class MoviePage extends React.Component{
           reviewMovieDetail: [],
           moviePageInfo: [],
           searchMovie: '',
+          year: '',
+          rating: '',
           loading: true,
           isReceive: false,
-          currentPage:1
+          currentPage:1,
+          isSort: false,
+          sort_type: '',
+          show_spoil: 0
       }
       this.handleClickBtn = this.handleClickBtn.bind(this);
       // this.getData = this.getData.bind(this);
       this.handleClickBtn2 = this.handleClickBtn2.bind(this)
       this.handleClickBtn3 = this.handleClickBtn3.bind(this)
+      this.showSpoiler = this.showSpoiler.bind(this)
   }
   handleClickBtn(event) {
     this.props.history.push("/");
@@ -38,23 +44,37 @@ class MoviePage extends React.Component{
       currentPage : this.state.currentPage+1
     })
   }
+
+  changeSort(type){
+    // console.log(type)
+    this.setState({
+        sort_type:type,
+        currentPage: 1,
+        isSort: true
+    })
+  }
+  showSpoiler(){
+    if(this.state.show_spoil == 0){
+      this.setState({
+        show_spoil: 1
+      })
+    }else{
+      this.setState({
+        show_spoil: 0
+      })
+    }
+  }
   componentDidMount () {
     this._isMounted = true;
     var data = this.props.location.state;
-    // if (data){
-    //     // console.log(data.name)
-    //     // console.log(data)
-    //     // var {name} = data
-    //     this.setState({
-    //         searchMovie: data.name,
-    //     })
-    // }
-    if (this.props.location.state){
+    if (this.props.location.state != ''){
         this.setState({
             reviewInfo:this.props.location.state.review,
             reviewMovieDetail:this.props.location.state.reviewMovieDetail,
             moviePageInfo: this.props.location.state.moviePageInfo,
-            
+            // searchMovie: '',
+            // year: '',
+            // rating: '',
             loading: false
         });
     }
@@ -66,14 +86,36 @@ class MoviePage extends React.Component{
       this._isMounted = false;
   }
   componentDidUpdate() {
-    console.log('a')
-    var path = {
-      pathname:'/ReviewOverall',
-      state: {review: this.props.location.state.review},
-    }
+    // console.log('a')
     if(this.state.isReceive){
+      var path = {
+        pathname:'/ReviewOverall',
+        state: {review: this.props.location.state.review},
+      }
       console.log(this.props.location.state.review)
       this.props.history.push(path);
+    }
+    if(this.state.isSort){
+      console.log(this.state.sort_type)
+      // this.state.reviewMovieDetail.year
+      const nameType = this.state.reviewMovieDetail.movieName+"'"+this.state.reviewMovieDetail.year+"'"+this.state.sort_type
+      console.log(nameType)
+      HttpUtil.post('/ReviewsContentSort', nameType)
+      .then(
+          reviewDic =>{
+              // this.allReviewData = reviewDic;
+              console.log(reviewDic)
+              // this.allReviewData = reviewDic
+              this.setState({
+                  moviePageInfo: reviewDic,
+                  // isReceive: true
+
+                  isSort:false
+              });
+          }
+      );
+      // console.log(this.state.reviewMovieDetail.movieName)
+      // console.log(this.state.moviePageInfo)
     }
   }
   render() {
@@ -102,22 +144,22 @@ class MoviePage extends React.Component{
                   <h2>Sort by</h2>
                 </div>
                 <ul>
-                  <li>
+                  {/* <li>
                     <input type="radio" name="sort" defaultValue="popular" data-default defaultChecked />
                     <span>helpful</span>
-                  </li>
+                  </li> */}
                   <li>
-                    <input type="radio" name="sort" defaultValue="newest" />
+                    <input type="radio" name="sort" data-default defaultChecked defaultValue="newest" onClick={this.changeSort.bind(this,"rating")}/>
                     <span>Rating</span>
                   </li>
                   <li>
-                    <input type="radio" name="sort" defaultValue="Rating" />
+                    <input type="radio" name="sort" defaultValue="Rating" onClick={this.changeSort.bind(this,"year")}/>
                     <span>Time</span>
                   </li>
                 </ul>
               </li>
               <form action="/exampleml/form_action.asp" method="get">
-                <p style={{color: 'white'}}><input type="checkbox" name="vehicle" defaultValue="Bike" /> Does it contains spoiler ?</p>
+                <p style={{color: 'white'}}><input type="checkbox" name="vehicle" defaultValue="Bike" onClick={this.showSpoiler}/> Does it contains spoiler ?</p>
               </form>
             </ul>
           </div>
@@ -129,7 +171,7 @@ class MoviePage extends React.Component{
           {/* <div id="content" style={{backgroundColor: '#7c1d5c', width: '85%', float: 'left'}}> */}
             {/*component*/}
             <div>
-              <Reviews data={this.state.moviePageInfo} currentPage={this.state.currentPage}/>
+              <Reviews data={this.state.moviePageInfo} currentPage={this.state.currentPage} spoil={this.state.show_spoil}/>
             </div>
 
             <div style={{height: '200px', backgroundColor: 'white', color: 'black'}}>
@@ -155,39 +197,73 @@ class MoviePage extends React.Component{
 }
 
 function reviewDetail(props){
-  // props.name = 'a';
-  // console.log(props)
+  console.log("State spoil: ")
+  console.log(props.spoil)
+  console.log("Attribute spoil: ")
+  console.log(props.spoiler_tag)
+  if (props.spoil == 0){
+    if (props.spoiler_tag == 0){
+      console.log("aaaaaaaaaaaaa")
+      return (
+        <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+        {/* <header className="first_reviewer"> */}
+            {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
+            <h3>Reviewer: {props.reviewer}</h3>
+            <h3>Reviewer ID: {props.reviewer_id}</h3>
+            <h3>Review Time: {props.review_time}</h3>
+            <h3>Rating: {props.rating}</h3>
+            <h3>Review Content: {props.review_content}</h3>
+            {/* <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> */}
+        {/* </header> */}
+        {/* </div> */}
+        <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
+        </div>);
 
-  // function handleClickBtn3() {
-  //     // props.func;
-  //     console.log("a")
-  //     props.func({movieName:props.name, year:props.year, averageRating:props.averageRating})
-  //   }
-  // console.log(props.func)
-  return (
-  <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-  {/* <header className="first_reviewer"> */}
-      {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
-      <h3>Reviewer: {props.reviewer}</h3>
-      <h3>Reviewer ID: {props.reviewer_id}</h3>
-      <h3>Review Time: {props.review_time}</h3>
-      <h3>Rating: {props.rating}</h3>
-      <h3>Review Content: {props.review_content}</h3>
-      {/* <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> */}
-  {/* </header> */}
-  {/* </div> */}
-  <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
-  </div>);
+    }
+  }else{
+    if (props.spoiler_tag == 1){
+      return (
+        <div className="first_review" style={{backgroundColor: '#FF0000'}}>
+        {/* <header className="first_reviewer"> */}
+            {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
+            <h3>Reviewer: {props.reviewer}</h3>
+            <h3>Reviewer ID: {props.reviewer_id}</h3>
+            <h3>Review Time: {props.review_time}</h3>
+            <h3>Rating: {props.rating}</h3>
+            <h3>Review Content: {props.review_content}</h3>
+            {/* <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> */}
+        {/* </header> */}
+        {/* </div> */}
+        <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
+        </div>);
+    }else{
+      
+      return (
+        <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+        {/* <header className="first_reviewer"> */}
+            {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
+            <h3>Reviewer: {props.reviewer}</h3>
+            <h3>Reviewer ID: {props.reviewer_id}</h3>
+            <h3>Review Time: {props.review_time}</h3>
+            <h3>Rating: {props.rating}</h3>
+            <h3>Review Content: {props.review_content}</h3>
+            {/* <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> */}
+        {/* </header> */}
+        {/* </div> */}
+        <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
+        </div>);
+    }
+  }
+    
 }
 
-
-function reviewList(nameList, currentPage) {
+function reviewList(nameList, currentPage, spoil) {
   var nameDOM = [];
-  console.log(currentPage)
-  for(var i = 0; i<currentPage*2;i++){
+  // console.log(currentPage)
+  for(var i = currentPage; i<currentPage+4;i++){
       // console.log(nameList[i])
       if(i<nameList.length){
-        nameDOM.push(reviewDetail({reviewer: nameList[i].reviewer, reviewer_id:nameList[i].reviewer_id, review_time:nameList[i].review_time, rating: nameList[i].rating, review_content:nameList[i].review_content}))
+        nameDOM.push(reviewDetail({reviewer: nameList[i].reviewer, reviewer_id:nameList[i].reviewer_id, review_time:nameList[i].review_time, rating: nameList[i].rating, review_content:nameList[i].review_content, spoiler_tag:nameList[i].spoiler_tag, spoil:spoil}))
       }
     // nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
 
@@ -205,7 +281,7 @@ function Reviews(reviewInfo) {
   // var nameList = ["Lingyun", "Yukino", "Nanami"];
   return (
     <div>
-      {reviewList(nameList,reviewInfo.currentPage)}
+      {reviewList(nameList,reviewInfo.currentPage,reviewInfo.spoil)}
     </div>
   )
 }
