@@ -163,16 +163,6 @@ class ReviewOverall extends React.Component{
         }
         return (
             <div>
-            {/* <header className="main_header">
-                <figure>
-                    <img src="images/logo.png" alt="logo" />
-                </figure>
-            </header>
-            <title>search_content</title>
-            <section className="review">
-            <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button>
-            <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
-            <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/> */}
             <title>MovieReview</title>
                 <link rel="stylesheet" href="all_in_one.css"/>
                 <header className="main_header"/>

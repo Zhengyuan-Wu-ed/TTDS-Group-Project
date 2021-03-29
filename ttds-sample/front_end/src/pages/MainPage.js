@@ -62,22 +62,32 @@ class MainPage extends React.Component{
         return (
             <div>
             <title>main</title>
-            {/* <link rel="stylesheet" href="MainPage.css" /> */}
-            
             <link rel="stylesheet" href="all_in_one.css"/>
-            <header>
-              <figure>
-                <img src={myIcon} alt="logo" />
-              </figure>
-            </header>
-            <section>
-              <input type="text" className="search_content" placeholder="Please input movie name"
-              onChange={this.handleChange.bind(this)} value={this.state.inputValue} color=""/>
-              <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Search</Button>
-              <input type="radio" className="selector" name="choice" defaultValue="movies name" />movie
-              <input type="radio" className="selector" name="choice" defaultValue="review" />review
-
-              {/* <Root /> */}
+                <header className="main_header"/>
+                <section className="review">
+                    <div id="search" style={{
+                        backgroundColor: 'black',
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}>
+                    <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
+                        <input style={{
+                            width: "400px",
+                            height: "50px",
+                            borderRadius: "10px",
+                            color: "black"
+                        }} type="text" className="search_content" placeholder="Please input movie name" onChange={this.handleChange.bind(this)} value={this.state.inputValue}/>
+                        <Button style={{margin: "20px", textAlign: "center",}} type="primary"
+                                onClick={this.handleClickBtn}>Search</Button>
+                        <input style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
+                               name="choice"
+                               defaultValue="movies name" />movie
+                        <input
+                            style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
+                            name="choice"
+                            defaultValue="review" />review
+                    </div>
             </section>
             <footer>
               <p>
