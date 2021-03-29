@@ -4,9 +4,7 @@ import React, {Component} from 'react';
 import HttpUtil from './HttpUtil';
 // import { Layout, Button} from 'antd';
 
-// import './all_in_one.css';
-import MainPage from "./MainPage";
-import MovieSearch from "./MovieSearch";
+import 'all_in_one.css';
 
 class MovieReviews extends React.Component {
     constructor(props) {

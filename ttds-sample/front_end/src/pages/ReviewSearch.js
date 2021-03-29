@@ -56,7 +56,7 @@ class ReviewSearch extends React.Component {
         return (
             <div>
                 <title>ReviewSearch</title>
-                <link rel="stylesheet" href="all_in_one.css"/>
+                {/* <link rel="stylesheet" href="all_in_one.css"/> */}
                 <header className="main_header"/>
                 <section className="review">
                     <div id="search"

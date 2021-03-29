@@ -4,6 +4,8 @@ import HttpUtil from './HttpUtil';
 
 
 
+// import 'all.css';
+
 class MoviePage extends React.Component{
 
   _isMounted = false;

@@ -8,6 +8,8 @@ import HttpUtil from './HttpUtil';
 import ApiUtil from './ApiUtil';
 
 
+import './all_in_one.css';
+
 class MainPage extends React.Component{
     constructor(props) {
         super(props);
