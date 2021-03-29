@@ -1,15 +1,11 @@
 from flask import  Flask, session;
 from flask import render_template;
 from flask import request;
-import json
-import spellchecker
-
 # import search as sc;
 import index_generator as ig;
 import get_inverted_index as gii;
 import Review_Content_Search as rcs
-import Review_Sorter as rs
-
+import json
 # app = Flask(__name__);
 app = Flask(__name__, template_folder='../front_end', static_folder='../front_end/build/static')
 app.config['SECRET_KEY'] = "42930583205720"
@@ -22,7 +18,7 @@ with open(result_file) as f:
 # movie = 'hollywood'
 inverted_index = gii.generate_index(review_dic)
 
-review_Content_Searcher = rcs.Review_Content_Searcher()
+# review_Content_Searcher = rcs.Review_Content_Searcher()
 # result = review_Content_Searcher.search("feel emotionally connected")
 # print(result)
 # result_dic = ig.normal_search(movie, review_dic, inverted_index)
@@ -33,60 +29,86 @@ review_Content_Searcher = rcs.Review_Content_Searcher()
 def home_page():
     return render_template('/build/index.html',name='home_page')
 
-# @app.route('/yukino')
-# def test():
-#     return "YUKINO !"
-
-
-# @app.route('/XX')
-# def new_test():
-#     return "XXXXXXX"
-
-# @app.route('/s?wd=123')
-# def answer_test():
-#     return "123123";
-
-# @app.route('/s')
-# def search():
-#     keyword = request.args.get('wd');
-#     return ig.normal_search(keyword);
-#在搜索界面可以自定义要替换的字符 然后再之后用 .replace("图片地址1",“图片地址2”) 类似的想法
-@app.route('/ReviewsContent', methods=['POST'])
-def getReviewsContent():
-    
-    # 从前端传过来的数据（phrase）
-    data = request.get_data(as_text=True)
-    data = data.replace('"',"")
-    print(data)
-    print(type(data))
-
-    # 从后端传回前端的数据（dic）
-    reviewContent_dic = {}
-    reviewContent_dic = review_Content_Searcher.search(data, review_dic)
-
-
-    
-    return reviewContent_dic
-
-
-@app.route('/Reviews', methods=['POST'])
-def getReviews():
+@app.route('/ReviewsSort', methods=['POST'])
+def getSortedReviews():
     # re = {'a':'a'}
     # review_dic = []
+    all_reviews = {}
     data = request.get_data(as_text=True)
     data = data.replace('"',"")
-    print(data)
-    print(type(data))
+    # print(data)
+    # print(type(data))
+    movieName = data.split("'")[0].lower()
+    sort_type = data.split("'")[1]
+    print(movieName)
+    print(sort_type)
+    # data = data.split('"')[1].lower()
+    # print(data)
+    # name = data["movie"]
+    if movieName != "":
+        result_dic = ig.normal_search(movieName, review_dic, inverted_index)
+        all_reviews = ig.movie_result(result_dic, sort_type)
+        # session["review_"+data] = ig.review_result(result_dic)
+    # print("Back-end data: "+data)
+    # return json.dumps(re)
+    # print(session.get(("review_"+data).lower()))
+    # print(len(session.get(("review_"+data))))
+    # return session.get(("review_"+data))
+    return all_reviews
+
+@app.route('/ReviewsContentSort', methods=['POST'])
+def getSortedReviewsContent():
+    # re = {'a':'a'}
+    # review_dic = []
+    all_reviews = {}
+    data = request.get_data(as_text=True)
+    data = data.replace('"',"")
+    # print(data)
+    # print(type(data))
     movieName = data.split("'")[0].lower()
     year = data.split("'")[1]
+    sort_type = data.split("'")[2]
     print(movieName)
-    print(year)
+    print(sort_type)
     # data = data.split('"')[1].lower()
     # print(data)
     # name = data["movie"]
     if movieName != "":
         result_dic = ig.normal_search(movieName, review_dic, inverted_index)
         all_reviews = ig.review_result(result_dic,movieName,year)
+        
+        all_reviews = ig.sort_review_result(all_reviews,sort_type)
+        # session["review_"+data] = ig.review_result(result_dic)
+    # print("Back-end data: "+data)
+    # return json.dumps(re)
+    # print(session.get(("review_"+data).lower()))
+    # print(len(session.get(("review_"+data))))
+    # return session.get(("review_"+data))
+    return all_reviews
+
+
+@app.route('/Reviews', methods=['POST'])
+def getReviews():
+    # re = {'a':'a'}
+    # review_dic = []
+    
+    data = request.get_data(as_text=True)
+    data = data.replace('"',"")
+    # print(data)
+    # print(type(data))
+    movieName = data.split("'")[0].lower()
+    year = data.split("'")[1]
+    # print(movieName)
+    # print(year)
+    # data = data.split('"')[1].lower()
+    # print(data)
+    # name = data["movie"]
+    if movieName != "":
+        result_dic = ig.normal_search(movieName, review_dic, inverted_index)
+        all_reviews = ig.review_result(result_dic,movieName,year)
+
+    # sort_result = review_result(result_dic, movie, 1999)
+    # sort_review_result(sort_result, 'rating')
         # session["review_"+data] = ig.review_result(result_dic)
     print("Back-end data: "+data)
     # return json.dumps(re)
@@ -105,6 +127,7 @@ def getMoiveReview(name):
 def getReview():
     # re = {'a':'a'}
     # review_dic = []
+    movies = ""
     print("START")
     if request.method == 'POST':
         data = request.get_data(as_text=True)
@@ -113,7 +136,8 @@ def getReview():
         # print(type(data))
         # name = data["movie"]
         if data != "":
-            session[data] = ig.getResult(data, review_dic, inverted_index)
+            # session[data] = ig.getResult(data, review_dic, inverted_index)
+            movies = ig.getResult(data, review_dic, inverted_index)
 
         # re = {
         #     'movieName': "The Matrix",
@@ -128,7 +152,7 @@ def getReview():
         print("Back-end data: "+data)
     # return json.dumps(re)
     
-    return session.get(data.lower())
+    return movies
 
 if __name__ =="__main__":
     

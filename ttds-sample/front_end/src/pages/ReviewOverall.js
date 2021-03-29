@@ -1,18 +1,8 @@
 
 import { Button, message } from 'antd';
-import Item from 'antd/lib/list/Item';
 import React, { Component } from 'react';
 import HttpUtil from './HttpUtil';
-// import { Layout, Button} from 'antd';
 import { useHistory, withRouter } from "react-router-dom";
-import './ReviewOverall.css';
-
-
-var allReviewData = [];
-// import myIcon from '../images/logo.png';
-// function SingleReview(props) {
-//     return <h3>Hello, {props.name}</h3>; <h3>Hellp, {props.age}</h3>
-// }
 class ReviewOverall extends React.Component{
 
     _isMounted = false;
@@ -49,7 +39,24 @@ class ReviewOverall extends React.Component{
             isSort: true
         })
     }
-    
+    changeResultPage(data) {
+        // console.log(data)
+        if (data == 0){
+        this.setState({
+            currentPage:1
+        })
+        }else{
+        if (this.state.currentPage+data > 1){
+            this.setState({
+            currentPage: this.state.currentPage+data
+            })
+        }else{
+            this.setState({
+            currentPage: 1
+            })
+        }
+        }
+    }
     changeState = (name) => {
         console.log(name)
         // var movieName = this.state.searchMovie
@@ -137,94 +144,153 @@ class ReviewOverall extends React.Component{
     }
     
     render(){
-
         if (this.state.loading) {
             return(
-            <div>Loading</div>
+                    <div>
+                        <img src="../images/error.png" alt="error"/>
+                        <button style={{
+                            borderRadius: '10%',
+                            backgroundColor: 'blue',
+                            width: '80px',
+                            height: '60px',
+                            color: 'darkorange',
+                            position: 'absolute',
+                            left: '200px'
+                        }}>Go back
+                        </button>
+                    </div>
             )
         }
-            return (
-                <div>
-                <header className="main_header">
-                    <figure>
-                        <img src="images/logo.png" alt="logo" />
-                    </figure>
-                </header>
-                <title>search_content</title>
+        return (
+            <div>
+            {/* <header className="main_header">
+                <figure>
+                    <img src="images/logo.png" alt="logo" />
+                </figure>
+            </header>
+            <title>search_content</title>
+            <section className="review">
+            <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button>
+            <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
+            <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/> */}
+            <title>MovieReview</title>
+                <link rel="stylesheet" href="all_in_one.css"/>
+                <header className="main_header"/>
                 <section className="review">
-                <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button>
-                <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
-                <input type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
-                <div id="menu" style={{backgroundColor: '#9191a5', height: '100%', width: '15%', float: 'left'}}>
-    ``              <ul className="filters">
-                    <li className="section expanded">
-                    <div className="title">
-                        <div className="expand">
-                        </div>
-                        <h2>Sort by</h2>
+                {/* <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button> */}
+                    <div id="search" style={{
+                        backgroundColor: 'black',
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}>
+
+                    <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
+                        <input style={{
+                            width: "400px",
+                            height: "50px",
+                            borderRadius: "10px",
+                            color: "black"
+                        }} type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
+                        <Button style={{margin: "20px", textAlign: "center",}} type="primary"
+                                onClick={this.handleClickBtn}>Search</Button>
+                        <input style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
+                               name="choice"
+                               defaultValue="movies name" />movie
+                        <input
+                            style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
+                            name="choice"
+                            defaultValue="review" />review
                     </div>
-                    <ul>
-                        <li>
-                        <input type="radio" name="sort" data-default defaultChecked onClick={this.changeSort.bind(this,"relevance")}/>
-                        <span>Relevance</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="sort" defaultValue="popular" onClick={this.changeSort.bind(this,"popularity")}/>
-                        <span>Popular</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="sort" defaultValue="newest" onClick={this.changeSort.bind(this,"year")}/>
-                        <span>New Releases</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="sort" defaultValue="Rating" onClick={this.changeSort.bind(this,"rating")}/>
-                        <span>Rating</span>
-                        </li>
-                    </ul>
-                    </li>
-                    <li className="section expanded">
-                    <div className="title">
-                        <div className="expand">
-                        </div>
-                        <h2>GENRE</h2>
-                    </div>
-                    <ul>
-                        <li>
-                        <input type="radio" name="genere" defaultValue="popular" data-default defaultChecked />
-                        <span>Action</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="genere" defaultValue="newest" />
-                        <span>Thriller</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="genere" defaultValue="Rating" />
-                        <span>Romance</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="genere" defaultValue="Rating" />
-                        <span>Adventure</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="genere" defaultValue="Rating" />
-                        <span>Fantasy</span>
-                        </li>
-                        <li>
-                        <input type="radio" name="genere" defaultValue="Rating" />
-                        <span>Drama</span>
-                        </li>
-                    </ul>
-                    </li>
-                </ul>
-                </div>
-                {/* <div style={{backgroundColor: '#EEEEEE'}}> */}
-                
-                <Reviews data={this.state.reviewInfo} func={this.changeState} currentPage ={this.state.currentPage}/>
-                {/* <reviewDetail func={this.changeState}/> */}
-                </section>
-          </div>
-            );
-        }
+                    <div id="menu" style={{
+                        // background: "repeat",
+                        backgroundColor: '#9191a5',
+                        // minHeight: "2000px",
+                        height: "100%",
+                        width: '15%',
+                        float: 'left',
+                        padding: "2px",
+                    }}>
+``                      <ul className="filters">
+                            <li className="section expanded">
+                                <div className="title">
+                                    <div className="expand">
+                                    </div>
+                                    <h2>Sort by</h2>
+                                </div>
+                                <ul>
+                                    <li>
+                                        <input type="radio" name="sort" data-default defaultChecked onClick={this.changeSort.bind(this,"relevance")}/>
+                                    <span>Relevance</span>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="sort" defaultValue="popular" onClick={this.changeSort.bind(this,"popularity")}/>
+                                    <span>Popular</span>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="sort" defaultValue="newest" onClick={this.changeSort.bind(this,"year")}/>
+                                    <span>New Releases</span>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="sort" defaultValue="Rating" onClick={this.changeSort.bind(this,"rating")}/>
+                                    <span>Rating</span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li className="section expanded">
+                            <div className="title">
+                                <div className="expand">
+                                </div>
+                                <h2>GENRE</h2>
+                            </div>
+                            <ul>
+                                <li>
+                                <input type="radio" name="genere" defaultValue="popular" data-default defaultChecked />
+                                <span>Action</span>
+                                </li>
+                                <li>
+                                <input type="radio" name="genere" defaultValue="newest" />
+                                <span>Thriller</span>
+                                </li>
+                                <li>
+                                <input type="radio" name="genere" defaultValue="Rating" />
+                                <span>Romance</span>
+                                </li>
+                                <li>
+                                <input type="radio" name="genere" defaultValue="Rating" />
+                                <span>Adventure</span>
+                                </li>
+                                <li>
+                                <input type="radio" name="genere" defaultValue="Rating" />
+                                <span>Fantasy</span>
+                                </li>
+                                <li>
+                                <input type="radio" name="genere" defaultValue="Rating" />
+                                <span>Drama</span>
+                                </li>
+                            </ul>
+                            </li>
+                        </ul>
+            </div>
+            {/* <div style={{backgroundColor: '#EEEEEE'}}> */}
+            
+            <Reviews data={this.state.reviewInfo} func={this.changeState} currentPage ={this.state.currentPage}/>
+
+
+            <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9"
+                size={3}/>
+
+            <div className="page">
+                {/*页码*/}
+                <a className="first" onClick={this.changeResultPage.bind(this,0)}>First Result Page</a>
+                <a className="prev" onClick={this.changeResultPage.bind(this,-4)}>&lt;=</a>
+                <a className="next" onClick={this.changeResultPage.bind(this,4)}>=&gt;</a>
+            </div>
+            {/* <reviewDetail func={this.changeState}/> */}
+            </section>
+        </div>
+        );
+    }
         
 
 }
@@ -260,8 +326,8 @@ function reviewDetail(props){
   
   function reviewList(nameList, a, currentPage) {
     var nameDOM = [];
-    // console.log(currentPage)
-    for(var i = 0; i<currentPage*2;i++){
+    console.log(currentPage)
+    for(var i = currentPage; i<currentPage+4;i++){
         // console.log(nameList[i])
         if (i<nameList.length){
             nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
@@ -285,29 +351,5 @@ function reviewDetail(props){
       </div>
     )
   }
-
-class ReviewDetail extends Component {
-
-    render() {
-        return (
-            // <div id="content" style = {{backgroundColor: '#EEEEE', height: '100%', width: '85%', float: 'left'}}>
-
-            // </div>
-            // <div id="content" style={{backgroundColor: '#EEEEEE', height: '100%', width: '85%', float: 'left'}}>
-                <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-                {/* <header className="first_reviewer"> */}
-                    <h3>Movie Name: {this.props.movie}</h3>
-                    <h3>Year: {this.props.year}</h3>
-                    <h3>Average rating: {this.props.average}</h3>
-                    <h3>Genre: {this.props.genre}</h3>
-                    <h3>Review number: {this.props.number}</h3>
-                    <Button style={{margin: "20px"}} type="primary" onClick={this.props.func}>More Details</Button>
-                {/* </header> */}
-                {/* </div> */}
-            </div>
-        );
-    }
-}
-
 
 export default ReviewOverall;

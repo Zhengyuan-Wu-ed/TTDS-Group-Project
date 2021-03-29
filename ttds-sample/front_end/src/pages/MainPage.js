@@ -2,9 +2,8 @@
 import React,{ Component } from 'react';
 import { Layout, Button} from 'antd';
  
-import './MainPage.css';
+
 import myIcon from '../images/logo.png';
-import { Link} from "react-router-dom";
 import HttpUtil from './HttpUtil';
 import ApiUtil from './ApiUtil';
 
@@ -61,7 +60,9 @@ class MainPage extends React.Component{
         return (
             <div>
             <title>main</title>
-            <link rel="stylesheet" href="MainPage.css" />
+            {/* <link rel="stylesheet" href="MainPage.css" /> */}
+            
+            <link rel="stylesheet" href="all_in_one.css"/>
             <header>
               <figure>
                 <img src={myIcon} alt="logo" />
