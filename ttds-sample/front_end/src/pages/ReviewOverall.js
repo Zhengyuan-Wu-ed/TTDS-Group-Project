@@ -1,7 +1,8 @@
-
 import { Button, message } from 'antd';
 import React, { Component } from 'react';
 import HttpUtil from './HttpUtil';
+import ApiUtil from './ApiUtil'
+import imgURL from "../images/err.png"
 import { useHistory, withRouter } from "react-router-dom";
 class ReviewOverall extends React.Component{
 
@@ -10,23 +11,54 @@ class ReviewOverall extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            reviewInfo: [],
+            inputValue: '',
+            reviewInfo: '',
             searchMovie: '',
             loading: true,
-            isReceive: false,
+            isReceiveReview: false,
             reviewMovieDetail: [],
             moviePageInfo: [],
             currentPage:1,
             sort_type: "",
-            isSort: false
+            isSort: false,
+            isReceive: false,
+            url: ApiUtil.URL_movie,
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
         // this.getData = this.getData.bind(this);
         this.handleClickBtn2 = this.handleClickBtn2.bind(this);
-        this.changeState = this.changeState.bind(this)
+        this.changeState = this.changeState.bind(this);
+        this.handleClickBtn4 = this.handleClickBtn4.bind(this);
+    }
+
+    handleChange(e){
+        this.setState({
+          inputValue:e.target.value
+        })
+    }
+    handleClickBtn(event) {
+        this.props.history.push("/");
+    }
+    handleClickBtn4 () {
+        var movieName = this.state.inputValue
+        if (this.state.inputValue == ''){
+            movieName = this.state.searchMovie
+        }
+        // console.log(this.state.url)
+        HttpUtil.post(this.state.url, movieName)
+            .then(
+            reviewDic =>{
+                this.setState({
+                    reviewInfo: reviewDic,
+                    searchMovie: movieName,
+                    inputValue: '',
+                    isReceive: true
+                });
+            }
+        );
     }
     handleClickBtn2(event) {
-        console.log(this.state.currentPage)
+        // console.log(this.state.currentPage)
         this.setState({
             currentPage: this.state.currentPage+1
         })
@@ -58,22 +90,22 @@ class ReviewOverall extends React.Component{
         }
     }
     changeState = (name) => {
-        console.log(name)
+        // console.log(name)
         // var movieName = this.state.searchMovie
         this.setState({
             reviewMovieDetail:name
         })
         const nameYear = name.movieName+"'"+name.year
-        console.log(nameYear)
+        // console.log(nameYear)
         HttpUtil.post('/Reviews', nameYear)
           .then(
             reviewDic =>{
                 // this.allReviewData = reviewDic;
-                console.log(reviewDic)
+                // console.log(reviewDic)
                 // this.allReviewData = reviewDic
                 this.setState({
                     moviePageInfo: reviewDic,
-                    isReceive: true
+                    isReceiveReview: true
                 });
             }
         );
@@ -82,34 +114,36 @@ class ReviewOverall extends React.Component{
   
     componentDidUpdate() {
     // console.log('a')
-        if(this.state.isReceive){
+        if(this.state.isReceiveReview){
 
             var path = {
                 pathname:'/MoviePage',
                 state: {reviewMovieDetail: this.state.reviewMovieDetail, moviePageInfo: this.state.moviePageInfo, review:this.state.reviewInfo},
             }
             // console.log(this.props.location.state.review)
-            console.log(path)
+            // console.log(path)
             // console.log(this.state.moviePageInfo)
             // console.log(this.state.reviewMovie)
             this.props.history.push(path);
         }
+        if(this.state.isReceive && this.state.url == ApiUtil.URL_review){
+            var path = {
+                pathname:this.state.url,
+                state: {name:this.state.searchMovie, review:this.state.reviewInfo},
+            }
+            // console.log(this.state.reviewInfo)
+            this.props.history.push(path);
+            this.setState({
+                isReceive:false
+            })
+        }
         if(this.state.isSort){
-            // /ReviewsSort
-            console.log(this.state.searchMovie)
-            console.log(this.state.sort_type)
             const nameType = this.state.searchMovie+"'"+this.state.sort_type
-            console.log(nameType)
             HttpUtil.post('/ReviewsSort', nameType)
             .then(
                 reviewDic =>{
-                    // this.allReviewData = reviewDic;
-                    console.log(reviewDic)
-                    // this.allReviewData = reviewDic
                     this.setState({
                         reviewInfo: reviewDic,
-                        // isReceive: true
-                        
                         isSort:false
                     });
                 }
@@ -117,48 +151,41 @@ class ReviewOverall extends React.Component{
         }
     }
     componentDidMount () {
+        // if (this.props.history.action == 'POP'){
+        //     console.log(this.state.reviewInfo)
+        //     console.log(this.props.history.action)
+        // }
         this._isMounted = true;
-        var data = this.props.location.state;
-        if (data){
-            // console.log(data.name)
-            // console.log(data)
-            var {name} = data
-            this.setState({
-                searchMovie: data.name,
-            })
-        }
         if (this.props.location.state){
             this.setState({
+                searchMovie: this.props.location.state.name,
                 reviewInfo:this.props.location.state.review,
                 loading: false
             });
         }
         
     }
-
     componentWillUnmount() {
         this._isMounted = false;
     }
-    handleClickBtn(event) {
-        this.props.history.push("/");
-    }
-    
     render(){
         if (this.state.loading) {
             return(
-                    <div>
-                        <img src="../images/error.png" alt="error"/>
-                        <button style={{
-                            borderRadius: '10%',
-                            backgroundColor: 'blue',
-                            width: '80px',
-                            height: '60px',
-                            color: 'darkorange',
-                            position: 'absolute',
-                            left: '200px'
-                        }}>Go back
-                        </button>
-                    </div>
+                <div>
+                <figure>
+                <img src={imgURL} alt="error"/>
+                </figure>
+                <button onClick={this.handleClickBtn} style={{
+                    borderRadius: '10%',
+                    backgroundColor: 'blue',
+                    width: '80px',
+                    height: '60px',
+                    color: 'darkorange',
+                    position: 'absolute',
+                    left: '200px'
+                }}>Go back
+                </button>
+            </div>
             )
         }
         return (
@@ -173,6 +200,7 @@ class ReviewOverall extends React.Component{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        color:"white"
                     }}>
 
                     <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
@@ -181,16 +209,16 @@ class ReviewOverall extends React.Component{
                             height: "50px",
                             borderRadius: "10px",
                             color: "black"
-                        }} type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''}/>
+                        }} type="text" className="search_content" placeholder={this.state.searchMovie ? this.state.searchMovie: ''} onChange={this.handleChange.bind(this)} value={this.state.inputValue}/>
                         <Button style={{margin: "20px", textAlign: "center",}} type="primary"
-                                onClick={this.handleClickBtn}>Search</Button>
+                                onClick={this.handleClickBtn4}>Search</Button>
                         <input style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
                                name="choice"
-                               defaultValue="movies name" />movie
+                               defaultValue="movies name" data-default defaultChecked onClick={() => this.setState({url: ApiUtil.URL_movie})}/>movie
                         <input
                             style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
                             name="choice"
-                            defaultValue="review" />review
+                            defaultValue="review" onClick={() => this.setState({url: ApiUtil.URL_review,isReceive: false})}/>review
                     </div>
                     <div id="menu" style={{
                         // background: "repeat",
@@ -267,8 +295,7 @@ class ReviewOverall extends React.Component{
             <Reviews data={this.state.reviewInfo} func={this.changeState} currentPage ={this.state.currentPage}/>
 
 
-            <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9"
-                size={3}/>
+           
 
             <div className="page">
                 {/*页码*/}
@@ -276,37 +303,35 @@ class ReviewOverall extends React.Component{
                 <a className="prev" onClick={this.changeResultPage.bind(this,-4)}>&lt;=</a>
                 <a className="next" onClick={this.changeResultPage.bind(this,4)}>=&gt;</a>
             </div>
+
+             <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9"
+                size={3}/>
             {/* <reviewDetail func={this.changeState}/> */}
             </section>
         </div>
         );
     }
-        
 
 }
 
 function reviewDetail(props){
 
     function handleClickBtn3() {
-        // props.func;
-        // console.log("a")
         props.func({movieName:props.name, year:props.year, averageRating:props.averageRating})
       }
-    // console.log(props.func)
-    // if (props.year == 0){
-    //     this.isShow = false;
-    // }
     return (
     <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+        <div style={{marginLeft:"250px"}}>
     {/* <header className="first_reviewer"> */}
         {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
         <h3>Movie Name: {props.name}</h3>
         <h3>Year: {props.year}</h3>
-        <h3>Average rating: {props.averageRating}</h3>
+        <h3>Average rating: {props.averageRating}{props.year != '0' && props.number != '0' ? <Button style={{marginLeft: "800px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> : ""}</h3>
+        
         <h3>Genre: {props.genre}</h3>
         <h3>Review number: {props.number}</h3>
-        
-        {props.year != '0' && props.number != '0' ? <Button style={{margin: "20px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> : ""}
+        </div>   
+
     {/* </header> */}
     {/* </div> */}
     <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
@@ -316,8 +341,8 @@ function reviewDetail(props){
   
   function reviewList(nameList, a, currentPage) {
     var nameDOM = [];
-    console.log(currentPage)
-    for(var i = currentPage; i<currentPage+4;i++){
+
+    for(var i = currentPage-1; i<currentPage+3;i++){
         // console.log(nameList[i])
         if (i<nameList.length){
             nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
@@ -329,12 +354,8 @@ function reviewDetail(props){
   }
   
   function Reviews(reviewInfo) {
-    // const a = this.state.reviewInfo
-    // console.log(reviewInfo.func)
     // 将字典转换为列表
     var nameList = Object.values(reviewInfo.data)
-    // console.log(nameList)
-    // var nameList = ["Lingyun", "Yukino", "Nanami"];
     return (
       <div>
         {reviewList(nameList, reviewInfo.func, reviewInfo.currentPage)}

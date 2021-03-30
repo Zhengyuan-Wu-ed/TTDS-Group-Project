@@ -29,7 +29,7 @@ def normal_search(input, review_dic, inverted_index):
     movie_list = list(review_dic)
     # inverted_index = generate_index(movie_list)
     start_0 = datetime.datetime.now()
-    print(start_0 - start)
+    # print(start_0 - start)
     result_list = {}
     words = input.split()
     for word in words:
@@ -70,7 +70,7 @@ def normal_search(input, review_dic, inverted_index):
         result_dic[movie] = review_dic[movie]
         # print(result_dic[movie])
     start_2 = datetime.datetime.now()
-    print(start_2 - start_0)
+    # print(start_2 - start_0)
 
     return result_dic
 
@@ -87,7 +87,7 @@ def review_result(result_dic, movieName, given_year=0):
             # print(v)
             if given_year == '0':
                 given_year = '\\N'
-            print(given_year)
+            # print(given_year)
             requestMovie = v[str(given_year)]
             # print(len(requestMovie[2]))
             if len(requestMovie[2]) != 0:
@@ -179,11 +179,12 @@ def sort_result(result_list, type):
     for key, value in dict(temp_dic).items():
         # print(key)
         # print(value)
-        sorted_list[index_string+str(final_index)] = value
+        sorted_list[final_index] = value
         final_index += 1
-        
+    # for k, v in sorted_list.items():
+    #     print(v['year'])
     # print(dict(temp_dic))
-    print(sorted_list)
+    # print(sorted_list)
     return sorted_list
 
 def sort_review_result(result_list, type='year'):
@@ -210,7 +211,7 @@ def sort_review_result(result_list, type='year'):
     for key, value in dict(temp_dic).items():
         # print(key)
         # print(value)
-        sorted_list[index_string+str(final_index)] = value
+        sorted_list[final_index] = value
         final_index += 1
         
     # print(dict(temp_dic))
@@ -226,7 +227,7 @@ def get_input_movie():
 
 
 def getResult(movie, review_dic, inverted_index):
-    print(movie)
+    # print(movie)
     # with open(result_file) as f:
     #     review_dic = json.load(f)
     result_dic = normal_search(movie, review_dic, inverted_index)
@@ -234,7 +235,7 @@ def getResult(movie, review_dic, inverted_index):
     # print(np.array(all_movie_result))
     # print(type(all_movie_result))
     # print(len(all_movie_result))
-    print(all_movie_result)
+    # print(all_movie_result)
 
     return all_movie_result
 

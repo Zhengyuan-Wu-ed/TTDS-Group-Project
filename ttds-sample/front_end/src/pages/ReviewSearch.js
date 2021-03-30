@@ -92,7 +92,7 @@ class ReviewSearch extends React.Component {
                                 <h3>Rating: </h3>
                                 <h3>Review content: </h3>
                             </div>
-                            <ReviewSearchDetail movie_name={} rating={} review_con={}/>
+                            <ReviewSearchDetail />
                         </div>
                         <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9"
                             size={3}/>

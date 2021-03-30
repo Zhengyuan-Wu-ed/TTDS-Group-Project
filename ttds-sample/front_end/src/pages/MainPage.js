@@ -1,4 +1,3 @@
-
 import React,{ Component } from 'react';
 import { Layout, Button} from 'antd';
  
@@ -17,10 +16,11 @@ class MainPage extends React.Component{
           inputValue:'',
           reviewInfo: {},
           foo:1,
-          isReceive: false
-
+          isReceive: false,
+          url: ApiUtil.URL_movie,
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
+        this.handleClickBtn2 = this.handleClickBtn2.bind(this)
     }
 
     handleChange(e){
@@ -31,7 +31,8 @@ class MainPage extends React.Component{
 
     handleClickBtn(event) {
       var movieName = this.state.inputValue
-      HttpUtil.post('/ReviewOverall', movieName)
+      // console.log(this.state.url)
+      HttpUtil.post(this.state.url, movieName)
         .then(
           reviewDic =>{
               // this.allReviewData = reviewDic;
@@ -44,16 +45,20 @@ class MainPage extends React.Component{
           }
       );
     }
-
-    componentDidUpdate() {
-      // console.log('a')
+    handleClickBtn2() {
       var path = {
-        pathname:'/ReviewOverall',
+        pathname:ApiUtil.URL_review,
         state: {name:this.state.inputValue, review:this.state.reviewInfo},
       }
+      this.props.history.push(path);
+    }
+    componentDidUpdate() {
       if(this.state.isReceive){
-
-        console.log(this.state.reviewInfo)
+        // console.log(this.state.reviewInfo)
+        var path = {
+          pathname:this.state.url,
+          state: {name:this.state.inputValue, review:this.state.reviewInfo},
+        }
         this.props.history.push(path);
       }
     }
@@ -61,7 +66,7 @@ class MainPage extends React.Component{
     render(){
         return (
             <div>
-            <title>main</title>
+            <title>Main</title>
             <link rel="stylesheet" href="all_in_one.css"/>
                 <header className="main_header"/>
                 <section className="review">
@@ -70,8 +75,9 @@ class MainPage extends React.Component{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        color:"white"
                     }}>
-                    <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn}>Main Page</Button>
+                    <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Main Page</Button>
                         <input style={{
                             width: "400px",
                             height: "50px",
@@ -82,15 +88,15 @@ class MainPage extends React.Component{
                                 onClick={this.handleClickBtn}>Search</Button>
                         <input style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
                                name="choice"
-                               defaultValue="movies name" />movie
+                               defaultValue="movies name" data-default defaultChecked onClick={() => this.setState({url: ApiUtil.URL_movie})}/>movie
                         <input
                             style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
                             name="choice"
-                            defaultValue="review" />review
+                            defaultValue="review" onClick={() => this.setState({url: ApiUtil.URL_review})}/>review
                     </div>
             </section>
             <footer>
-              <p>
+              <p style={{color:"blue"}}>
                 TTDS CW3
               </p>
             </footer>
