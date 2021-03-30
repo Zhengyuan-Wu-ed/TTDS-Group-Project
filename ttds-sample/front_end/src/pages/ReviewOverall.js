@@ -13,6 +13,7 @@ class ReviewOverall extends React.Component{
         this.state={
             inputValue: '',
             reviewInfo: '',
+            detailReviewInfo: "",
             searchMovie: '',
             loading: true,
             isReceiveReview: false,
@@ -23,9 +24,10 @@ class ReviewOverall extends React.Component{
             isSort: false,
             isReceive: false,
             url: ApiUtil.URL_movie,
+            movieGenre: "",
+            showGenre: "",
         }
         this.handleClickBtn = this.handleClickBtn.bind(this);
-        // this.getData = this.getData.bind(this);
         this.handleClickBtn2 = this.handleClickBtn2.bind(this);
         this.changeState = this.changeState.bind(this);
         this.handleClickBtn4 = this.handleClickBtn4.bind(this);
@@ -44,8 +46,8 @@ class ReviewOverall extends React.Component{
         if (this.state.inputValue == ''){
             movieName = this.state.searchMovie
         }
-        // console.log(this.state.url)
-        if (this.state.sort_type == ""){
+        console.log(this.state.url)
+        if (this.state.url == ApiUtil.URL_review){
             console.log(movieName)
             HttpUtil.post(this.state.url, movieName)
             .then(
@@ -59,31 +61,28 @@ class ReviewOverall extends React.Component{
             }
         );
         }else{
-            // console.log(this.state.inputValue)
-            // console.log(this.state.searchMovie)
+            this.getGenre(movieName)
             const nameType = movieName+"'"+this.state.sort_type
             HttpUtil.post('/ReviewsSort', nameType)
             .then(
                 reviewDic =>{
-                    // console.log(reviewDic)
                     this.setState({
                         reviewInfo: reviewDic,
                         searchMovie: movieName,
                         inputValue: '',
-                        isSort:false
+                        isSort:false,
+                        showGenre: ""
                     });
                 }
             );
         }
     }
     handleClickBtn2(event) {
-        // console.log(this.state.currentPage)
         this.setState({
             currentPage: this.state.currentPage+1
         })
     }
     changeSort(type){
-        // console.log(type)
         this.setState({
             sort_type:type,
             currentPage: 1,
@@ -91,16 +90,17 @@ class ReviewOverall extends React.Component{
         })
     }
     changeResultPage(data) {
-        // console.log(data)
         if (data == 0){
-        this.setState({
-            currentPage:1
-        })
+            this.setState({
+                currentPage:1
+            })
         }else{
         if (this.state.currentPage+data > 1){
-            this.setState({
-            currentPage: this.state.currentPage+data
-            })
+            if (this.state.currentPage+data < Object.values(this.state.reviewInfo).length){
+                this.setState({
+                    currentPage: this.state.currentPage+data
+                    })
+            }
         }else{
             this.setState({
             currentPage: 1
@@ -109,19 +109,13 @@ class ReviewOverall extends React.Component{
         }
     }
     changeState = (name) => {
-        // console.log(name)
-        // var movieName = this.state.searchMovie
         this.setState({
             reviewMovieDetail:name
         })
         const nameYear = name.movieName+"'"+name.year
-        // console.log(nameYear)
         HttpUtil.post('/Reviews', nameYear)
           .then(
             reviewDic =>{
-                // this.allReviewData = reviewDic;
-                // console.log(reviewDic)
-                // this.allReviewData = reviewDic
                 this.setState({
                     moviePageInfo: reviewDic,
                     isReceiveReview: true
@@ -129,20 +123,21 @@ class ReviewOverall extends React.Component{
             }
         );
     };
+
+    changeShowGenre = (genre) => {
+        this.setState({
+            showGenre: genre.showGenre
+        })
+    }
     
   
     componentDidUpdate() {
-    // console.log('a')
         if(this.state.isReceiveReview){
 
             var path = {
                 pathname:'/MoviePage',
-                state: {reviewMovieDetail: this.state.reviewMovieDetail, moviePageInfo: this.state.moviePageInfo, review:this.state.reviewInfo},
+                state: {reviewMovieDetail: this.state.reviewMovieDetail, moviePageInfo: this.state.moviePageInfo, review:this.state.reviewInfo, previousSearch:this.state.searchMovie},
             }
-            // console.log(this.props.location.state.review)
-            // console.log(path)
-            // console.log(this.state.moviePageInfo)
-            // console.log(this.state.reviewMovie)
             this.props.history.push(path);
         }
         if(this.state.isReceive && this.state.url == ApiUtil.URL_review){
@@ -150,7 +145,6 @@ class ReviewOverall extends React.Component{
                 pathname:this.state.url,
                 state: {name:this.state.searchMovie, review:this.state.reviewInfo},
             }
-            // console.log(this.state.reviewInfo)
             this.props.history.push(path);
             this.setState({
                 isReceive:false
@@ -169,11 +163,20 @@ class ReviewOverall extends React.Component{
             );
         }
     }
+    getGenre(movieName) {
+        HttpUtil.get("/ReviewGenre/"+movieName)
+        .then(
+            genreList => {
+                this.setState({
+                    movieGenre: genreList
+                })
+            }
+        ).catch(error => {
+            message.error(error.message);
+            this.setState({loading:false})
+        });
+    }
     componentDidMount () {
-        // if (this.props.history.action == 'POP'){
-        //     console.log(this.state.reviewInfo)
-        //     console.log(this.props.history.action)
-        // }
         this._isMounted = true;
         if (this.props.location.state){
             this.setState({
@@ -181,6 +184,7 @@ class ReviewOverall extends React.Component{
                 reviewInfo:this.props.location.state.review,
                 loading: false
             });
+            this.getGenre(this.props.location.state.name)
         }
         
     }
@@ -213,7 +217,6 @@ class ReviewOverall extends React.Component{
                 <link rel="stylesheet" href="all_in_one.css"/>
                 <header className="main_header"/>
                 <section className="review">
-                {/* <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Review Details</Button> */}
                     <div id="search" style={{
                         backgroundColor: 'black',
                         display: "flex",
@@ -240,9 +243,7 @@ class ReviewOverall extends React.Component{
                             defaultValue="review" onClick={() => this.setState({url: ApiUtil.URL_review,isReceive: false})}/>review
                     </div>
                     <div id="menu" style={{
-                        // background: "repeat",
                         backgroundColor: '#9191a5',
-                        // minHeight: "2000px",
                         height: "100%",
                         width: '15%',
                         float: 'left',
@@ -281,40 +282,17 @@ class ReviewOverall extends React.Component{
                                 <h2>GENRE</h2>
                             </div>
                             <ul>
-                                <li>
-                                <input type="radio" name="genere" defaultValue="popular" data-default defaultChecked />
-                                <span>Action</span>
-                                </li>
-                                <li>
-                                <input type="radio" name="genere" defaultValue="newest" />
-                                <span>Thriller</span>
-                                </li>
-                                <li>
-                                <input type="radio" name="genere" defaultValue="Rating" />
-                                <span>Romance</span>
-                                </li>
-                                <li>
-                                <input type="radio" name="genere" defaultValue="Rating" />
-                                <span>Adventure</span>
-                                </li>
-                                <li>
-                                <input type="radio" name="genere" defaultValue="Rating" />
-                                <span>Fantasy</span>
-                                </li>
-                                <li>
-                                <input type="radio" name="genere" defaultValue="Rating" />
-                                <span>Drama</span>
-                                </li>
-                            </ul>
+                            
+                            <li>
+                                <input type="radio" name="genre" defaultChecked onClick={this.changeShowGenre.bind(this,{showGenre:""})}/><span>Show All</span>
+                            </li>
+                            <GenerateGenre data={this.state.movieGenre} func={this.changeShowGenre}/></ul>
                             </li>
                         </ul>
             </div>
-            {/* <div style={{backgroundColor: '#EEEEEE'}}> */}
             
-            <Reviews data={this.state.reviewInfo} func={this.changeState} currentPage ={this.state.currentPage}/>
+            <Reviews data={this.state.reviewInfo} func={this.changeState} currentPage ={this.state.currentPage} showGenre = {this.state.showGenre}/>
 
-
-           
 
             <div className="page">
                 {/*页码*/}
@@ -325,7 +303,6 @@ class ReviewOverall extends React.Component{
 
              <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9"
                 size={3}/>
-            {/* <reviewDetail func={this.changeState}/> */}
             </section>
         </div>
         );
@@ -338,48 +315,86 @@ function reviewDetail(props){
     function handleClickBtn3() {
         props.func({movieName:props.name, year:props.year, averageRating:props.averageRating})
       }
-    return (
-    <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-        <div style={{marginLeft:"250px"}}>
-    {/* <header className="first_reviewer"> */}
-        {/* <h1 style={{backgroundColor: '#EEEEEE'}}>Hello, {props.name}</h1> */}
-        <h3>Movie Name: {props.name}</h3>
-        <h3>Year: {props.year}</h3>
-        <h3>Average rating: {props.averageRating}{props.year != '0' && props.number != '0' ? <Button style={{marginLeft: "800px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> : ""}</h3>
-        
-        <h3>Genre: {props.genre}</h3>
-        <h3>Review number: {props.number}</h3>
-        </div>   
+    const showGenre = props.showGenre
+        return (
+        <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
+            <div style={{marginLeft:"250px"}}>
+            <h2>Movie Name: {props.name}</h2>
+            <h2>Year: {props.year}</h2>
+            <h2>Average rating: {props.averageRating}{props.year != '0' && props.number != '0' ? <Button style={{marginLeft: "800px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> : ""}</h2>
+            <h2>Genre: {props.genre}</h2>
+            <h2>Review number: {props.number}</h2>
+            </div>   
 
-    {/* </header> */}
-    {/* </div> */}
-    <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
-    </div>);
-  }
+        <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
+        </div>);
+    }
+    // }
   
-  
-  function reviewList(nameList, a, currentPage) {
+  function reviewList(nameList, a, currentPage, showGenre) {
     var nameDOM = [];
-
     for(var i = currentPage-1; i<currentPage+3;i++){
-        // console.log(nameList[i])
         if (i<nameList.length){
-            nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a}))
+            nameDOM.push(reviewDetail({name: nameList[i].movieName, year: nameList[i].year, averageRating: nameList[i].averageRating, genre: nameList[i].genre, number: nameList[i].number, func:a, showGenre: showGenre}))
         }
 
-      // nameDOM
     }
     return nameDOM;
   }
   
   function Reviews(reviewInfo) {
-    // 将字典转换为列表
+    // 将字典转换为列表)
     var nameList = Object.values(reviewInfo.data)
+
+    var reviewFilter = []
+
+    for (var i = 0; i< nameList.length; i++){
+        if(nameList[i].genre.indexOf(reviewInfo.showGenre)!= -1){
+            reviewFilter.push(nameList[i])
+        }
+    }
+    nameList = reviewFilter
     return (
       <div>
-        {reviewList(nameList, reviewInfo.func, reviewInfo.currentPage)}
+        {reviewList(nameList, reviewInfo.func, reviewInfo.currentPage, reviewInfo.showGenre)}
       </div>
     )
+  }
+
+  function GenreDetail(props) {
+
+    function handleShowGenre() {
+        props.func({showGenre:props.genre})
+    }
+
+      return(
+          <li>
+              <input type="radio" name="genre" onClick={handleShowGenre}/><span>{props.genre}</span>
+          </li>
+
+      )
+  }
+
+  function GenreList(genreList, func){
+    var genreDOM = [];
+
+    for(var i = 0; i<genreList.length;i++){
+        genreDOM.push(GenreDetail({genre: genreList[i], func: func}))
+      // nameDOM
+    }
+    return genreDOM;
+  }
+
+  function GenerateGenre(genres){
+    //   console.log(genres)
+      var genreList = Object.values(genres.data)
+    //   console.log(genreList)
+      return (
+          <div>
+            {GenreList(genreList, genres.func)}
+          </div>
+      )
+
   }
 
 export default ReviewOverall;

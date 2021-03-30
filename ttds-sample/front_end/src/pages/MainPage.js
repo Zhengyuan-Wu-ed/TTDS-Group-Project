@@ -31,13 +31,9 @@ class MainPage extends React.Component{
 
     handleClickBtn(event) {
       var movieName = this.state.inputValue
-      // console.log(this.state.url)
       HttpUtil.post(this.state.url, movieName)
         .then(
           reviewDic =>{
-              // this.allReviewData = reviewDic;
-              // console.log(reviewDic)
-              // this.allReviewData = reviewDic
               this.setState({
                   reviewInfo: reviewDic,
                   isReceive: true
@@ -77,7 +73,6 @@ class MainPage extends React.Component{
                         alignItems: "center",
                         color:"white"
                     }}>
-                    <Button style={{margin:"20px"}} type="primary" onClick={this.handleClickBtn2}>Main Page</Button>
                         <input style={{
                             width: "400px",
                             height: "50px",

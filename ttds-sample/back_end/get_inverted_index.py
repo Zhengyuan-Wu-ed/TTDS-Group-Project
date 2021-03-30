@@ -54,6 +54,7 @@ def generate_index(movie_list):
                 inverted_index[word].append({})
                 inverted_index[word][1][index] = [str(word_position+1)]
             inverted_index[word][0] = len(inverted_index[word][1])
+    # print(inverted_index['matrix'])
     return inverted_index
 
 

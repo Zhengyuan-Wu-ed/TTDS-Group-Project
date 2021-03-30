@@ -30,7 +30,6 @@ class MovieReviews extends React.Component {
     }
     
     showSpoiler() {
-        console.log(this.state.show_spoil)
         if (this.state.show_spoil == 0) {
         this.setState({
             show_spoil: 1
@@ -54,14 +53,10 @@ class MovieReviews extends React.Component {
         if (this.state.inputValue == ''){
             movieName = this.state.searchMovie
         }
-        // console.log(this.state.url)
-        if (this.state.sort_type == ""){
+        if (this.state.url == ApiUtil.URL_movie){
             HttpUtil.post(this.state.url, movieName)
             .then(
               reviewDic =>{
-                  // this.allReviewData = reviewDic;
-                  console.log(reviewDic)
-                  // this.allReviewData = reviewDic
                   this.setState({
                       reviewInfo: reviewDic,
                       searchMovie: movieName,
@@ -72,11 +67,9 @@ class MovieReviews extends React.Component {
           );
         }else{
             const nameType = movieName+"'"+this.state.sort_type
-            console.log(nameType)
             HttpUtil.post('/MovieReviews', nameType)
             .then(
                 reviewDic =>{
-                    console.log(reviewDic)
                     this.setState({
                         reviewInfo: reviewDic,
                         searchMovie: movieName,
@@ -90,7 +83,6 @@ class MovieReviews extends React.Component {
       }
     componentDidUpdate() {
         if(this.state.isReceive && this.state.url == ApiUtil.URL_movie){
-          console.log(this.state.reviewInfo)
           var path = {
             pathname:this.state.url,
             state: {name:this.state.searchMovie, review:this.state.reviewInfo},
@@ -103,21 +95,12 @@ class MovieReviews extends React.Component {
 
         }
         if(this.state.isSort){
-            // /ReviewsSort
-            // console.log(this.state.searchMovie)
-            // console.log(this.state.sort_type)
             const nameType = this.state.searchMovie+"'"+this.state.sort_type
-            console.log(nameType)
             HttpUtil.post('/MovieReviews', nameType)
             .then(
                 reviewDic =>{
-                    // this.allReviewData = reviewDic;
-                    console.log(reviewDic)
-                    // this.allReviewData = reviewDic
                     this.setState({
                         reviewInfo: reviewDic,
-                        // isReceiveReview: true
-                        
                         isSort:false
                     });
                 }
@@ -126,9 +109,7 @@ class MovieReviews extends React.Component {
       }
     componentDidMount () {
         this._isMounted = true;
-        console.log(this.props.location.state)
         if (this.props.location.state){
-            console.log(this.props.location.state.name)
             this.setState({
                 searchMovie: this.props.location.state.name,
                 reviewInfo:this.props.location.state.review,
@@ -142,7 +123,6 @@ class MovieReviews extends React.Component {
     }
 
     changeSort(type){
-        console.log(type)
         this.setState({
             sort_type:type,
             currentPage: 1,
@@ -151,7 +131,6 @@ class MovieReviews extends React.Component {
     }
 
     changeResultPage(data) {
-        // console.log(data)
         if (data == 0){
         this.setState({
             currentPage:1
@@ -213,11 +192,11 @@ class MovieReviews extends React.Component {
                                 onClick={this.handleClickBtn2}>Search</Button>
                         <input style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
                                name="choice"
-                               defaultValue="movies name"  onClick={() => this.setState({url: ApiUtil.URL_movie, isReceive: false})}/>movie
+                               defaultValue="movies name"  onClick={() => this.setState({url: ApiUtil.URL_movie, isReceive: false, sort_type:''})}/><span style={{color:"white"}}>movie</span>
                         <input
                             style={{margin: "10px", textAlign: "center"}} type="radio" className="selector"
                             name="choice"
-                            defaultValue="review" data-default defaultChecked onClick={() => this.setState({url: ApiUtil.URL_review})}/>review
+                            defaultValue="review" data-default defaultChecked onClick={() => this.setState({url: ApiUtil.URL_review})}/><span style={{color:"white"}}>review</span>
                     </div>
                     <div id="menu" style={{
                         // background: "repeat",
@@ -254,7 +233,7 @@ class MovieReviews extends React.Component {
                             <form style={{display: "flex", flexDirection: "row"}} action="/exampleml/form_action.asp"
                                   method="get">
                                 <input type="checkbox" name="vehicle"
-                                       defaultValue="Bike" onClick={this.showSpoiler}/> <p style={{color: 'white'}}>Does it contains spoiler ?</p>
+                                       defaultValue="Bike" onClick={this.showSpoiler}/> <p style={{color: 'white'}}>Disable Spoiler Filter</p>
                             </form>
                         </ul>
                     </div>
@@ -273,20 +252,20 @@ class MovieReviews extends React.Component {
                         </div>
                         <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9"
                             size={3}/>
-                        <div style={{height: '200px', backgroundColor: 'white', color: 'black', margin: "15px"}}>
+                        {/* <div style={{height: '200px', backgroundColor: 'white', color: 'black', margin: "15px"}}>
                             <h1>User name</h1><input type="text" name="name"/>
                             <h1 style={{marginTop: "5px"}}>Rating</h1> <input type="text" name="rating"/>
                             <form style={{ display: "flex", flexDirection: "row"}} action="/exampleml/form_action.asp" method="get">
               
                             <input type="checkbox" name="vehicle"
-                                defaultValue="Bike" /> <p style={{ color: 'white' }}>Does it contains spoiler ?</p>
+                                defaultValue="Bike" /> <p style={{ color: 'white' }}>Disable Spoiler Filter</p>
                             </form>
                             <textarea
                                 style={{minHeight: '100px', minWidth: '800px', maxHeight: '100px', maxWidth: '800px'}}
                                 cols={80} rows={5} defaultValue={""}/><br/>
                             <Button style={{margin: "20px", textAlign: "center",marginLeft:"0px"}} type="primary"
                                     onClick={this.handleClickBtn}>Submit</Button>
-                        </div>
+                        </div> */}
                     </div>
                 </section>
             </div>
@@ -295,29 +274,10 @@ class MovieReviews extends React.Component {
 }
 
 function reviewDetail(props){
-  if (props.spoil == 0) {
-    if (props.spoiler_tag == 0) {
-        return (
-        <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-            <div style={{marginLeft:"250px"}}>
-            <h3>Movie name: {props.movie}</h3>
-            <h3>Year: {props.year}</h3>
-            <h3>Category: {props.category}</h3>
-            <h3>Reviewer: {props.reviewer}</h3>
-            <h3>Reviewer ID:{props.review_id} </h3>
-            <h3>Review time: {props.review_date}</h3>
-            <h3>Rating: {props.rating}</h3>
-            <h3>Review content :{props.review_detail}</h3>
-            <h3>Review Summary: {props.review_summary}</h3>
-            </div>
-        <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
-        </div>);
-    }
-  }else {
     if (props.spoiler_tag == 1) {
       return (
           <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-            <div style={{marginLeft:"250px"}}>
+            <div style={{marginLeft:"10px"}}>
             <h3>Movie name: {props.movie}</h3>
             <h3>Year: {props.year}</h3>
             <h3>Category: {props.category}</h3>
@@ -325,16 +285,15 @@ function reviewDetail(props){
             <h3>Reviewer ID:{props.review_id} </h3>
             <h3>Review time: {props.review_date}</h3>
             <h3>Rating: {props.rating}</h3>
-            <h3>Review content :<h4 style={{color:"red"}}>{props.review_detail}</h4></h3>
             <h3>Review Summary: {props.review_summary}</h3>
+            <h3>Review content :<h4 style={{color:"red"}}>{props.review_detail}</h4></h3>
             </div>  
           <hr style={{ filter: 'alpha(opacity=100,finishopacity=0,style=3)' }} width="100%" color="#987cb9" size={3} />
         </div>);
     } else {
-
       return (
         <div className="first_review" style={{backgroundColor: '#EEEEEE'}}>
-            <div style={{marginLeft:"250px"}}>
+            <div style={{marginLeft:"10px"}}>
             <h3>Movie name: {props.movie}</h3>
             <h3>Year: {props.year}</h3>
             <h3>Category: {props.category}</h3>
@@ -342,24 +301,18 @@ function reviewDetail(props){
             <h3>Reviewer ID:{props.review_id} </h3>
             <h3>Review time: {props.review_date}</h3>
             <h3>Rating: {props.rating}</h3>
-            <h3>Review content :{props.review_detail}</h3>
             <h3>Review Summary: {props.review_summary}</h3>
-            </div>   
-            {/* {props.year != '0' && props.number != '0' ? <Button style={{marginLeft: "800px"}} type="primary" onClick={handleClickBtn3}>More Details</Button> : ""} */}
-        {/* </header> */}
-        {/* </div> */}
+            <h3>Review content :{props.review_detail}</h3>
+            </div> 
         <hr style={{filter: 'alpha(opacity=100,finishopacity=0,style=3)'}} width="100%" color="#987cb9" size={3} />
         </div>);
     }
   }
-}
   
   
   function reviewList(nameList, currentPage, spoil) {
     var nameDOM = [];
-    // console.log(currentPage)
     for(var i = currentPage-1; i<currentPage+3;i++){
-        // console.log(nameList[i])
         if (i<nameList.length){
             nameDOM.push(reviewDetail({movie: nameList[i].movie, year: nameList[i].year, rating: nameList[i].rating, category: nameList[i].category, reviewer: nameList[i].reviewer, review_id: nameList[i].review_id, review_summary: nameList[i].review_summary,review_detail: nameList[i].review_detail,review_date: nameList[i].review_date, spoiler_tag:nameList[i].spoiler_tag, spoil: spoil}))
         }
@@ -370,13 +323,17 @@ function reviewDetail(props){
   }
   
   function Reviews(reviewInfo) {
-      
-    // const a = this.state.reviewInfo
-    // console.log(reviewInfo.func)
-    // 将字典转换为列表
     var nameList = Object.values(reviewInfo.data)
-    // console.log(nameList)
-    // var nameList = ["Lingyun", "Yukino", "Nanami"];
+    var spoilerFilter = []
+
+    if (reviewInfo.show_spoil == 0){
+      for (var i = 0; i< nameList.length; i++){
+        if(nameList[i].spoiler_tag == 0){
+            spoilerFilter.push(nameList[i])
+        }
+      }
+      nameList = spoilerFilter
+    }
     return (
       <div>
         {reviewList(nameList, reviewInfo.currentPage, reviewInfo.show_spoil)}

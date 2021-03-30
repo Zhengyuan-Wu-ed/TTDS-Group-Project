@@ -16,7 +16,7 @@ def sort_by_rating(original_dic):
     result_dic = {}
     index = 0
     for review in newlist:
-        result_dic["index_" + str(index)] = review
+        result_dic[index] = review
         index += 1
 
     return result_dic
@@ -75,7 +75,7 @@ def sort_by_time(original_dic):
     index = 0
     for review in newlist:
         review["review_date"] = convert_number_to_date(review["review_date"])
-        result_dic["index_" + str(index)] = review
+        result_dic[index] = review
         index += 1
 
     return result_dic
@@ -89,15 +89,15 @@ def get_movie_reviews_by_category(original_dic, category_name):
 
         # convert category to a list of string
         category = []
-        if review["category"].find(",") == -1:
-            category.append(review["category"])
+        if review["genre"].find(",") == -1:
+            category.append(review["genre"])
         else:
-            category = review["category"].split(",")
+            category = review["genre"].split(",")
         # print(category)
 
         for cat in category:
             if cat == category_name:
-                result_dic["index_" + str(index)] = review
+                result_dic[index] = review
                 index += 1
     return result_dic
 

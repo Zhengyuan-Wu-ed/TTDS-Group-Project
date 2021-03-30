@@ -24,7 +24,7 @@ class Review_Content_Searcher:
                 del returned_review_dic['helpful']
                 returned_review_dic['year'] = returned_review_dic['movie'][1]
                 returned_review_dic['movie'] = returned_review_dic['movie'][0]
-                returned_review_dic["category"] = main_dictionary[movie_name][year][1]
+                returned_review_dic["genre"] = main_dictionary[movie_name][year][1]
                 return returned_review_dic
 
     # 传入TFIDF搜索的results（是一个list），返回一个双层字典
@@ -34,7 +34,7 @@ class Review_Content_Searcher:
         for item in TFIDF_search_results:
             movie_name, year, review_id = item[0].split("_")
             single_review_dic = self.get_review(movie_name, year, review_id, main_dictionary)
-            returned_dic["index_" + str(index)] = single_review_dic
+            returned_dic[index] = single_review_dic
             index += 1
         return returned_dic
 

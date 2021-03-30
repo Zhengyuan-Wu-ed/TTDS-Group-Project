@@ -36,19 +36,14 @@ def home_page():
 @app.route('/MovieReviews', methods=['POST'])
 def getReviewsContent():
 
-    # 从前端传过来的数据（phrase）
     data = request.get_data(as_text=True)
     data = data.replace('"',"")
     data = data.split("'")
     sort_type = ''
-    # print(data)
-    # print(type(data))
     reviewContent_dic = {"a":"b"}
     input_data = data[0]
     if len(data) > 1:
         sort_type = data[1]
-    # print(sort_type)
-    # 从后端传回前端的数据（dic）
     reviewContent_dic = review_Content_Searcher.search(data[0], review_dic)
     if sort_type == 'rating':
         reviewContent_dic = rs.sort_by_rating(reviewContent_dic)
@@ -63,7 +58,7 @@ def getSortedReviews():
     all_reviews = {}
     data = request.get_data(as_text=True)
     data = data.replace('"',"")
-
+    genre = {}
     movieName = data.split("'")[0].lower()
     sort_type = data.split("'")[1]
 
@@ -71,35 +66,35 @@ def getSortedReviews():
     if movieName != "":
         result_dic = ig.normal_search(movieName, review_dic, inverted_index)
         all_reviews = ig.movie_result(result_dic, sort_type)
+    
+    index = 1
+    for k, v in all_reviews.items():
+        for category in v['genre'].split(","):
+            if category not in genre.values():
+                if category != '\\N':
+                    # print(category)
+                    genre[index]=category
+                    index += 1
+    session["genre"+movieName] = genre
     return all_reviews
+
+@app.route('/ReviewGenre'+'/<name>', methods=['GET'])
+def getMoiveGenre(name):
+    return session.get("genre"+name)
+
 
 @app.route('/ReviewsContentSort', methods=['POST'])
 def getSortedReviewsContent():
-    # re = {'a':'a'}
-    # review_dic = []
     all_reviews = {}
     data = request.get_data(as_text=True)
     data = data.replace('"',"")
-    # print(data)
-    # print(type(data))
     movieName = data.split("'")[0].lower()
     year = data.split("'")[1]
     sort_type = data.split("'")[2]
-    # print(movieName)
-    # print(sort_type)
-    # data = data.split('"')[1].lower()
-    # print(data)
-    # name = data["movie"]
     if movieName != "":
         result_dic = ig.normal_search(movieName, review_dic, inverted_index)
         all_reviews = ig.review_result(result_dic,movieName,year)
         all_reviews = ig.sort_review_result(all_reviews,sort_type)
-        # session["review_"+data] = ig.review_result(result_dic)
-    # print("Back-end data: "+data)
-    # return json.dumps(re)
-    # print(session.get(("review_"+data).lower()))
-    # print(len(session.get(("review_"+data))))
-    # return session.get(("review_"+data))
     return all_reviews
 
 
@@ -113,30 +108,33 @@ def getReviews():
     if movieName != "":
         result_dic = ig.normal_search(movieName, review_dic, inverted_index)
         all_reviews = ig.review_result(result_dic,movieName,year)
-    print("Back-end data: "+data)
     return all_reviews
 
 @app.route('/ReviewOverall'+'/<name>', methods=['GET'])
 def getMoiveReview(name):
-    print("Movie name: "+ name)
+    # print("Movie name: "+ name)
     # print(session)
     return session.get(name.lower())
 
 @app.route('/ReviewOverall', methods=['GET','POST'])
 def getReview():
     movies = ""
-    print("START")
+    genre = {}
     if request.method == 'POST':
         data = request.get_data(as_text=True)
         data = data.split('"')[1].lower()
         if data != "":
             movies = ig.getResult(data, review_dic, inverted_index)
-
-        print("Back-end data: "+data)
     
+        index = 1
+    for k, v in movies.items():
+        for category in v['genre'].split(","):
+            if category not in genre.values():
+                genre[index]=category
+                index += 1
+    session["genre"+data] = genre
     return movies
 
 if __name__ =="__main__":
     
-    # print(movie)
-    app.run(debug=True,port=5000)
+    app.run(debug=False,host='0.0.0.0',port=6001)
