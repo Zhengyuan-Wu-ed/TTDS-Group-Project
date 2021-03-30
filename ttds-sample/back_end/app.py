@@ -40,11 +40,13 @@ def getReviewsContent():
     data = request.get_data(as_text=True)
     data = data.replace('"',"")
     data = data.split("'")
+    sort_type = ''
     # print(data)
     # print(type(data))
     reviewContent_dic = {"a":"b"}
     input_data = data[0]
-    sort_type = data[1]
+    if len(data) > 1:
+        sort_type = data[1]
     # print(sort_type)
     # 从后端传回前端的数据（dic）
     reviewContent_dic = review_Content_Searcher.search(data[0], review_dic)
@@ -65,7 +67,7 @@ def getSortedReviews():
     movieName = data.split("'")[0].lower()
     sort_type = data.split("'")[1]
 
-    
+
     if movieName != "":
         result_dic = ig.normal_search(movieName, review_dic, inverted_index)
         all_reviews = ig.movie_result(result_dic, sort_type)
