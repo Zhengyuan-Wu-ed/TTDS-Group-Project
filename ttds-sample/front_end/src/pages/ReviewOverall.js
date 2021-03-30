@@ -45,7 +45,9 @@ class ReviewOverall extends React.Component{
             movieName = this.state.searchMovie
         }
         // console.log(this.state.url)
-        HttpUtil.post(this.state.url, movieName)
+        if (this.state.sort_type == ""){
+            console.log(movieName)
+            HttpUtil.post(this.state.url, movieName)
             .then(
             reviewDic =>{
                 this.setState({
@@ -56,6 +58,23 @@ class ReviewOverall extends React.Component{
                 });
             }
         );
+        }else{
+            // console.log(this.state.inputValue)
+            // console.log(this.state.searchMovie)
+            const nameType = movieName+"'"+this.state.sort_type
+            HttpUtil.post('/ReviewsSort', nameType)
+            .then(
+                reviewDic =>{
+                    // console.log(reviewDic)
+                    this.setState({
+                        reviewInfo: reviewDic,
+                        searchMovie: movieName,
+                        inputValue: '',
+                        isSort:false
+                    });
+                }
+            );
+        }
     }
     handleClickBtn2(event) {
         // console.log(this.state.currentPage)

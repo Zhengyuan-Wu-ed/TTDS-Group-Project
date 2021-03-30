@@ -21,6 +21,7 @@ class MovieReviews extends React.Component {
             isReceive: false,
             show_spoil: 0,
             isSort: false,
+            sort_type: "",
 
         }
         this.handleClickBtn = this.handleClickBtn.bind(this)
@@ -54,20 +55,38 @@ class MovieReviews extends React.Component {
             movieName = this.state.searchMovie
         }
         // console.log(this.state.url)
-        HttpUtil.post(this.state.url, movieName)
-          .then(
-            reviewDic =>{
-                // this.allReviewData = reviewDic;
-                console.log(reviewDic)
-                // this.allReviewData = reviewDic
-                this.setState({
-                    reviewInfo: reviewDic,
-                    searchMovie: movieName,
-                    inputValue: '',
-                    isReceive: true
-                });
-            }
-        );
+        if (this.state.sort_type == ""){
+            HttpUtil.post(this.state.url, movieName)
+            .then(
+              reviewDic =>{
+                  // this.allReviewData = reviewDic;
+                  console.log(reviewDic)
+                  // this.allReviewData = reviewDic
+                  this.setState({
+                      reviewInfo: reviewDic,
+                      searchMovie: movieName,
+                      inputValue: '',
+                      isReceive: true
+                  });
+              }
+          );
+        }else{
+            const nameType = movieName+"'"+this.state.sort_type
+            console.log(nameType)
+            HttpUtil.post('/MovieReviews', nameType)
+            .then(
+                reviewDic =>{
+                    console.log(reviewDic)
+                    this.setState({
+                        reviewInfo: reviewDic,
+                        searchMovie: movieName,
+                        inputValue:"",
+                        isSort:false
+                    });
+                }
+            );
+        }
+       
       }
     componentDidUpdate() {
         if(this.state.isReceive && this.state.url == ApiUtil.URL_movie){
