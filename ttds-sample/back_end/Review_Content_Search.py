@@ -44,18 +44,18 @@ class Review_Content_Searcher:
 
 #从txt文件中读取并重新构建字典：words_dic
 def read_words_indexing():
-    # data_path = os.path.join(os.getcwd(),'review_indexing.txt')
-    data_path = "C:\\Users\\WZY\\miniconda3\\envs\\TTDS\\TTDS\\review_indexing.txt"
+    data_path = os.path.join(os.getcwd(),'review_indexing.txt')
+    # data_path = "C:\\Users\\WZY\\miniconda3\\envs\\TTDS\\TTDS\\review_indexing.txt"
     file_read = open(data_path,'r',encoding='utf-8')
     print("Loading from",data_path)
-    
+
     words_dic={}# key is word, value is {doc_ID,[word_pos1,word_pos2,...]}
     word=''
     for line in file_read.readlines():
         if line[0] != '\t':
             word = line.split(':')[0]
             word_count = line.split(':')[1]
-            
+
         elif line[0] == '\t':
             line = line.strip()
             doc_ID = line.split(" : ")[0]
@@ -70,7 +70,7 @@ def read_words_indexing():
     return words_dic
 
 def load_English_stop_words():
-    data_path = os.path.join(os.getcwd(),'data','englishST.txt')
+    data_path = os.path.join(os.getcwd(),'','englishST.txt')
     ref_file = open(data_path, "r")
     English_stop_words = []#store English stop words
     for ref_line in ref_file.readlines():
@@ -177,7 +177,7 @@ if __name__ =="__main__":
     print("main run")
     import json
     # 导入result.json进行测试
-    data_path = os.path.join(os.getcwd(), 'data', 'result.json')
+    data_path = os.path.join(os.getcwd(), '', 'result.json')
     with open(data_path) as f:
         main_dic = json.load(f)
 
