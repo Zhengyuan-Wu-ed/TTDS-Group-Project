@@ -11,5 +11,12 @@ The data sets we use in this project are:
 2.  IMDb Datasets title.basics.tsv.gz
 (https://www.imdb.com/interfaces/)
 
-___These database file should be download and put under the "data" fold.___
 
+__website-attempt:__
+Contains the early stage setup for Flask framework.
+
+__ttds_web:__
+Contains early stage web designs.
+
+__ttds-sample:__
+It contains all back-end codes and front-end design that was deployed on the server.
